@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: page_head('Home Page', 'none')}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{navigation :: header_menu}"></div>
+		<div th:replace="~{fragments :: search_form('/search')}"></div>
+		<div>
+			<h3 class="text-center text-primary mb-4">Shopping by Categories</h3>
+		</div>
+		<div class="row row-cols-3 row-cols-sm-4 row-cols-lg-6">
+			<div class="col d-flex flex-column align-items-center"
+				th:each="category : ${listCategories}">
+				<div>
+					<img alt="Category image" th:src="@{${category.getImagePath()}}"
+						width="80" class="img-fluid" />
+				</div>
+				<div class="text-center p-3">
+					<a th:href="@{'/c/' + ${category.alias}}">[[${category.name}]]</a>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="~{navigation :: footer_menu}"></div>
+	</div>
+</body>
+</html>
