@@ -19,7 +19,11 @@ public class CountryRestController {
 
 	@GetMapping("/countries/list")
 	public List<Country> listAll() {
-		return repository.findAllByOrderByNameAsc();
+		List<Country> countries = repository.findAllByOrderByNameAsc();
+		for (Country country : countries) {
+			System.out.println(country);
+		}
+		return countries;
 	}
 
 	@PostMapping("/countries/save")

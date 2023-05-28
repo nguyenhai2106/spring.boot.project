@@ -27,7 +27,7 @@ public class WebSecurityConfig {
 	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.userDetailsService(userDetailsService())
                 .authorizeHttpRequests()
-                .requestMatchers("/users/**", "/settings/**", "/countries/**", "/states/**").hasAuthority("Admin")
+                .requestMatchers("/users/**", "/settings/**", "/countries/**", "/states/**").hasAnyAuthority("Admin")
 
                 .requestMatchers("/categories/**", "/brands/**").hasAnyAuthority("Admin", "Editor")
 

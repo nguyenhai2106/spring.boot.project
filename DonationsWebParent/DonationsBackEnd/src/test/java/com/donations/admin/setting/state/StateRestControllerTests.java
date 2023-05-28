@@ -38,7 +38,7 @@ public class StateRestControllerTests {
 	StateRepository stateRepository;
 
 	@Test
-	@WithMockUser(username = "haintfx17393@funix.edu.vn", password = "1234qwer", roles = "ADMIN")
+	@WithMockUser(username = "haintfx17393@funix.edu.vn", password = "1234qwer", roles = "Admin")
 	public void testListByCountries() throws Exception {
 		Integer countryId = 1;
 		String urlString = "/states/list_by_country/" + countryId;
