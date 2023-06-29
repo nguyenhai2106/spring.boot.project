@@ -1,8 +1,5 @@
 package com.donations.admin.setting;
 
-import static org.assertj.core.api.Assertions.contentOf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -46,12 +43,30 @@ public class SettingController {
 	@PostMapping("/settings/save_general")
 	public String saveGeneralSetting(@RequestParam("fileImage") MultipartFile multipartFile, HttpServletRequest request,
 			RedirectAttributes redirectAttributes) throws IOException {
-		GeneralSettingBag settingBag = settingService.getSenGeneralSettingBags();
+		GeneralSettingBag settingBag = settingService.getGeneralSettingBags();
 		saveSiteLogo(multipartFile, settingBag);
 		saveCurrencySymbol(request, settingBag);
 		updateSettingValuesFromForm(request, settingBag.list());
 		redirectAttributes.addFlashAttribute("message", "General settings have been saved!");
 		return "redirect:/settings";
+	}
+
+	@PostMapping("/settings/save_mail_server")
+	public String saveMailServerSettings(HttpServletRequest request, RedirectAttributes redirectAttributes)
+			throws IOException {
+		List<Setting> mailServerSettings = settingService.getMailServerSettings();
+		updateSettingValuesFromForm(request, mailServerSettings);
+		redirectAttributes.addFlashAttribute("message", "Mail server settings have been saved");
+		return "redirect:/settings#mailServer";
+	}
+	
+	@PostMapping("/settings/save_mail_templates")
+	public String saveMailTemplateSettings(HttpServletRequest request, RedirectAttributes redirectAttributes)
+			throws IOException {
+		List<Setting> mailTemplateSettings = settingService.getMailTemplateSettings();
+		updateSettingValuesFromForm(request, mailTemplateSettings);
+		redirectAttributes.addFlashAttribute("message", "Mail template settings have been saved");
+		return "redirect:/settings#mailTemplates";
 	}
 
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag settingBag) throws IOException {

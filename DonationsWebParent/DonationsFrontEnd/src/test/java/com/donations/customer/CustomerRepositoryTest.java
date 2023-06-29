@@ -43,6 +43,7 @@ public class CustomerRepositoryTest {
 		customer.setPostalCode("70000");
 		customer.setCreatedTime(new Date());
 		Customer savedCustomer = repository.save(customer);
+
 		assertThat(savedCustomer).isNotNull();
 		assertThat(savedCustomer.getId()).isGreaterThan(0);
 	}
@@ -64,16 +65,17 @@ public class CustomerRepositoryTest {
 
 	@Test
 	public void getCustomerByEmail() {
-		String emailString = "haintfx17393@funix.edu.vn";
-		Customer customer = repository.findByEmail(emailString);
-		assertThat(customer).isNotNull();
+		String email = "nguyentrunghai2106@gmail.com";
+		Customer customer = repository.findByEmail(email);
 		System.out.println(customer);
+		System.out.println("DEBUGS");
+		assertThat(customer).isNotNull();
 	}
 
 	@Test
 	public void testEnableCustomer() {
-		repository.enable(1);
-		Customer customer = repository.findById(1).get();
+		repository.enable(1024);
+		Customer customer = repository.findById(1024).get();
 		assertThat(customer.isEnabled()).isTrue();
 	}
 }

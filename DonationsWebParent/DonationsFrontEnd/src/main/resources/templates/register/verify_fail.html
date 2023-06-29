@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: page_head('Virification Failed!', 'none')}" />
+<body>
+	<div class="container-fluid">
+		<div th:replace="~{navigation :: header_menu}"></div>
+		<div class="text-center mt-3">
+			<h3>Customer Verification</h3>
+			<h4>Your account was already verified, or the verification code
+				is invalid.</h4>
+		</div>
+		<div th:replace="~{navigation :: footer_menu}"></div>
+	</div>
+</body>
+</html>

@@ -34,12 +34,12 @@ $(document).ready(function() {
 			changeFormStateToNewCountry();
 		}
 	})
-	
+
 	updateCountryButton.click(function() {
 		updateCountry();
 	})
-	
-	deleteCountryButton.click(function(){
+
+	deleteCountryButton.click(function() {
 		deleteCountry();
 	})
 })
@@ -85,11 +85,23 @@ function changeFormStateToNewCountry() {
 	fieldCountryCode.val("");
 }
 
+function validateCountryForm() {
+	var countryForm = document.getElementById("countryForm");
+	if (!countryForm.checkValidity()) {
+		countryForm.reportValidity();
+		return false;
+	}
+	return true;
+}
+
 function addCountry() {
+	if (!validateCountryForm()) {
+		return;
+	}
 	url = contextPath + "countries/save";
 	var countryName = fieldCountryName.val();
 	var countryCode = fieldCountryCode.val();
-	var jsonData = {name: countryName, code: countryCode};
+	var jsonData = { name: countryName, code: countryCode };
 	$.ajax({
 		type: "POST",
 		url: url,
@@ -105,12 +117,15 @@ function addCountry() {
 }
 
 function updateCountry() {
+	if (!validateCountryForm()) {
+		return;
+	}
 	url = contextPath + "countries/save";
 	var countryName = fieldCountryName.val();
-	var countryCode = fieldCountryCode.val();	
+	var countryCode = fieldCountryCode.val();
 	var countryId = dropDownCountries.val().split("-")[0];
-	
-	var jsonData = {id: countryId, name: countryName, code: countryCode};
+
+	var jsonData = { id: countryId, name: countryName, code: countryCode };
 	$.ajax({
 		type: "POST",
 		url: url,
@@ -131,18 +146,18 @@ function deleteCountry() {
 	var optionValue = dropDownCountries.val();
 	var countryId = optionValue.split("-")[0];
 	url = contextPath + "countries/delete/" + countryId;
-	
+
 	$.ajax({
 		type: "DELETE",
 		url: url,
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader(csrfHeaderName, csrfValue);
 		}
-	}).done(function(){
+	}).done(function() {
 		$("#dropDownCountries option[value='" + optionValue + "']").remove();
 		changeFormStateToNewCountry();
 		showToastMessage("Đã xóa Quốc gia có Id là " + countryId);
-	}) .fail(function() {
+	}).fail(function() {
 		showToastMessage("Không thể kết nối đến server");
 	})
 }
@@ -151,21 +166,15 @@ function selectedAddedCountry(countryId, countryCode, countryName) {
 	var optionValue = countryId + "-" + countryCode;
 	$("<option>").val(optionValue).text(countryName).appendTo(dropDownCountries);
 	$("#dropDownCountries option[value='" + optionValue + "']").prop("selected", true);
-	
+
 	fieldCountryName.val("");
 	fieldCountryCode.val("");
-	
-	}
+
+}
 
 function showToastMessage(message) {
 	$("#toastMessage").text(message);
 	$(".toast").toast('show');
 }
 
-function validateCountryForm() {
-	var countryForm = document.getElementById("countryForm");
-	if (!countryForm.checkValidity()) {
-		countryForm.reportValidity();
-	}
-}
 

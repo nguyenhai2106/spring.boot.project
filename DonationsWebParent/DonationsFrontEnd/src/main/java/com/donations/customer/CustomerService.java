@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.donations.common.entity.Country;
 import com.donations.common.entity.Customer;
@@ -14,6 +15,7 @@ import com.donations.setting.CountryRepository;
 import net.bytebuddy.utility.RandomString;
 
 @Service
+@Transactional
 public class CustomerService {
 	@Autowired
 	private CountryRepository countryRepository;
@@ -56,5 +58,15 @@ public class CustomerService {
 	public void encodePassword(Customer customer) {
 		String encodedPassword = passwordEncoder.encode(customer.getPassword());
 		customer.setPassword(encodedPassword);
+	}
+
+	public boolean verifyAccount(String verificationCode) {
+		Customer customer = customerRepository.findByVerificationCode(verificationCode);
+		if (customer == null || customer.isEnabled()) {
+			return false;
+		} else {
+			customerRepository.enable(customer.getId());
+			return true;
+		}
 	}
 }

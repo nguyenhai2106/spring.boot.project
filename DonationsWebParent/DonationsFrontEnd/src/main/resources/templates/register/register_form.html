@@ -1,180 +1,287 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}" />
-<body>
-	<div class="container-fluid">
-		<div th:replace="~{navigation :: header_menu}"></div>
-		<div align="center" class="mt-2">
-			<h3 class="text-center mb-3 text-primary">[[${pageTitle}]]</h3>
-			<div th:if="${message != null}" id="messageAlert"
-				class="alert alert-success alert-dismissible fade show col-8 mx-auto text-center"
-				role="alert">
-				[[${message}]]
-				<button type="button" class="btn-close" data-bs-dismiss="alert"
-					aria-label="Close"></button>
-			</div>
-			<div id="conpasscheck"
-				class="alert alert-danger alert-dismissible fade show col-6 mx-auto text-center"
-				role="alert">
-				Confirm Password Do Not Match!
-				<button type="button" class="btn-close" data-bs-dismiss="alert"
-					aria-label="Close"></button>
-			</div>
-		</div>
-		<form th:action="@{/create_customer}" method="post"
-			style="max-width: 800px; margin: 0 auto;" th:object="${customer}"
-			enctype="multipart/form-data"
-			onsubmit="return checkEmailUnique(this);">
-			<input type="hidden" th:field="*{id}">
-			<div class="border border-primary rounded p-4 pe-0">
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">First Name</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{firstName}"
-							required="required" maxlength="64" minlength="2" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Last Name</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{lastName}"
-							required="required" maxlength="64" minlength="2" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Email</label>
-					<div class="col-sm-9">
-						<input type="email" class="form-control" th:field="*{email}"
-							required="required" maxlength="128" minlength="8" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Password</label>
-					<div class="col-sm-9">
-						<input th:if="${customer.id == null}" type="password"
-							class="form-control" th:field="*{password}" required="required"
-							maxlength="64" minlength="8" onsubmit="validateConfirmPassword()" />
-						<input th:if="${customer.id != null}" type="password"
-							id="password" class="form-control" th:field="*{password}"
-							maxlength="64" minlength="8" onsubmit="validateConfirmPassword()" />
-					</div>
-				</div>
-				<div class=" input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Confirm Password</label>
-					<div class="col-sm-9">
-						<input th:if="${customer.id == null}" type="password"
-							id="confirmPassword" class="form-control" required="required"
-							maxlength="64" minlength="8" onblur="validateConfirmPassword()" />
-						<input th:if="
-								${customer.id !=null} " type="password"
-							class="form-control" maxlength="64" minlength="8"
-							id="confirmPassword" onblur="validateConfirmPassword()" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Phone Number</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{phoneNumber}"
-							required="required" maxlength="64" minlength="2" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Address Line 1</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{addressLine1}"
-							required="required" maxlength="64" minlength="2" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Address Line 2</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{addressLine2}"
-							required="required" maxlength="64" minlength="2" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">City</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{city}"
-							required="required" maxlength="64" minlength="2" />
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Country</label>
-					<div class="col-sm-9">
-						<select class="form-select" th:field="*{country}">
-							<th:block th:each="country : ${countriesList}">
-								<option th:value="${country.id}">[[${country.name}]]</option>
-							</th:block>
-						</select>
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">State</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" maxlength="64"
-							th:field="*{state}" list="states">
-						<datalist id="states">
-						</datalist>
-					</div>
-				</div>
-				<div class="input-group mb-3 row">
-					<label class="col-sm-3 col-form-label">Postal Code</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" th:field="*{postalCode}"
-							required="required" maxlength="128" minlength="8" />
-					</div>
-				</div>
-				<div class="mt-2 text-center">
-					<input type="submit" value="Save" class="btn btn-primary me-2" />
-					<input type="button" value="Cancel" class="btn btn-secondary"
-						id="buttonCancel" />
-				</div>
-			</div>
-		</form>
-		<div th:replace="~{modal_fragments :: modal_dialog}"></div>
-		<div th:replace="~{fragments :: footer}"></div>
-		<script
-			src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-			crossorigin="anonymous"></script>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}" />
+  <body>
+    <div class="container-fluid">
+      <div th:replace="~{navigation :: header_menu}"></div>
+      <div align="center" class="mt-2">
+        <h3 class="text-center mb-3 text-primary">[[${pageTitle}]]</h3>
+        <div
+          th:if="${message != null}"
+          id="messageAlert"
+          class="alert alert-success alert-dismissible fade show col-8 mx-auto text-center"
+          role="alert"
+        >
+          [[${message}]]
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div
+          id="conpasscheck"
+          class="alert alert-danger alert-dismissible fade show col-6 mx-auto text-center"
+          role="alert"
+        >
+          Confirm Password Do Not Match!
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+      <form
+        th:action="@{/create_customer}"
+        method="post"
+        style="max-width: 800px; margin: 0 auto"
+        th:object="${customer}"
+        enctype="multipart/form-data"
+        onsubmit="return checkEmailUnique(this);"
+      >
+        <input type="hidden" th:field="*{id}" />
+        <div class="border border-primary rounded p-4 pe-0">
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">First Name</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{firstName}"
+                required="required"
+                maxlength="64"
+                minlength="2"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Last Name</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{lastName}"
+                required="required"
+                maxlength="64"
+                minlength="2"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Email</label>
+            <div class="col-sm-9">
+              <input
+                type="email"
+                class="form-control"
+                th:field="*{email}"
+                required="required"
+                maxlength="128"
+                minlength="8"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Password</label>
+            <div class="col-sm-9">
+              <input
+                th:if="${customer.id == null}"
+                type="password"
+                class="form-control"
+                th:field="*{password}"
+                required="required"
+                maxlength="64"
+                minlength="8"
+                onsubmit="validateConfirmPassword(document.getElementById('confirmPassword'))"
+              />
+              <input
+                th:if="${customer.id != null}"
+                type="password"
+                id="password"
+                class="form-control"
+                th:field="*{password}"
+                maxlength="64"
+                minlength="8"
+                onsubmit="validateConfirmPassword(document.getElementById('confirmPassword'))"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Confirm Password</label>
+            <div class="col-sm-9">
+              <input
+                th:if="${customer.id == null}"
+                type="password"
+                id="confirmPassword"
+                class="form-control"
+                required="required"
+                maxlength="64"
+                minlength="8"
+                onblur="validateConfirmPassword(this)"
+              />
+              <input
+                th:if="
+								${customer.id !=null} "
+                type="password"
+                class="form-control"
+                maxlength="64"
+                minlength="8"
+                id="confirmPassword"
+                onblur="validateConfirmPassword(this)"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Phone Number</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{phoneNumber}"
+                required="required"
+                maxlength="64"
+                minlength="2"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Address Line 1</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{addressLine1}"
+                required="required"
+                maxlength="64"
+                minlength="2"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Address Line 2</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{addressLine2}"
+                required="required"
+                maxlength="64"
+                minlength="2"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">City</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{city}"
+                required="required"
+                maxlength="64"
+                minlength="2"
+              />
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Country</label>
+            <div class="col-sm-9">
+              <select class="form-select" th:field="*{country}">
+                <th:block th:each="country : ${countriesList}">
+                  <option th:value="${country.id}">[[${country.name}]]</option>
+                </th:block>
+              </select>
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">State</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                maxlength="64"
+                th:field="*{state}"
+                list="states"
+              />
+              <datalist id="states"> </datalist>
+            </div>
+          </div>
+          <div class="input-group mb-3 row">
+            <label class="col-sm-3 col-form-label">Postal Code</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{postalCode}"
+                required="required"
+                maxlength="128"
+                minlength="6"
+              />
+            </div>
+          </div>
+          <div class="mt-2 text-center">
+            <input
+              type="submit"
+              value="Registration"
+              class="btn btn-primary me-2"
+            />
+            <input
+              type="button"
+              value="Cancel"
+              class="btn btn-secondary"
+              id="buttonCancel"
+            />
+          </div>
+        </div>
+      </form>
+      <div th:replace="~{modal_fragments :: modal_dialog}"></div>
+      <div th:replace="~{fragments :: footer}"></div>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"
+      ></script>
 
-		<script type="text/javascript">
-			contextPath = "[[@{/}]]";
-			$("#conpasscheck").hide();
-			$("#messageAlert").fadeOut(2000);
-			function checkEmailUnique(form) {
-				let url = "[[@{/customers/check_email}]]";
-				let customerEmail = $("#email").val();
-				let customerId = $("#id").val();
-				let csrfValue = $("input[name='_csrf']").val();
-				let params = {
-					id : customerId,
-					email : customerEmail,
-					_csrf : csrfValue
-				};
-				$
-						.post(
-								url,
-								params,
-								function(response) {
-									if (response == "OK") {
-										form.submit();
-									} else if (response == "Duplicated") {
-										showWarningModal("There is another customer having the email "
-												+ customerEmail);
-									} else {
-										showErrorModal("Unknown response from server");
-									}
-								}).fail(function() {
-							showErrorModal("Could not connect to server");
-						});
-				return false;
-			}
-		</script>
-		<script type="text/javascript" th:src="@{/js/common_form.js}"></script>
-		<script type="text/javascript" th:src="@{/js/common_customer_form.js}"></script>
-	</div>
-</body>
+      <script type="text/javascript">
+        contextPath = "[[@{/}]]";
+        $("#conpasscheck").hide();
+        $("#messageAlert").fadeOut(2000);
+        function checkEmailUnique(form) {
+          let url = "[[@{/customers/check_email}]]";
+          let customerEmail = $("#email").val();
+          let customerId = $("#id").val();
+          let csrfValue = $("input[name='_csrf']").val();
+          let params = {
+            id: customerId,
+            email: customerEmail,
+            _csrf: csrfValue,
+          };
+          $.post(url, params, function (response) {
+            if (response == "OK") {
+              form.submit();
+            } else if (response == "Duplicated") {
+              showWarningModal(
+                "There is another customer having the email " + customerEmail
+              );
+            } else {
+              showErrorModal("Unknown response from server");
+            }
+          }).fail(function () {
+            showErrorModal("Could not connect to server");
+          });
+          return false;
+        }
+      </script>
+      <script type="text/javascript" th:src="@{/js/common_form.js}"></script>
+      <script
+        type="text/javascript"
+        th:src="@{/js/common_customer_form.js}"
+      ></script>
+    </div>
+  </body>
 </html>

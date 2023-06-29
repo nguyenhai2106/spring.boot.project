@@ -95,7 +95,20 @@ function changeFormStateToNew() {
 	fieldStateName.val("").focus();
 }
 
+function validateStateForm() {
+	var stateForm = document.getElementById("stateForm");
+	if (!stateForm.checkValidity()) {
+		stateForm.reportValidity();
+		return false;
+	}
+
+	return true;
+}
+
 function addState() {
+	if (!validateStateForm()) {
+		return;
+	}
 	url = contextPath + "states/save";
 	var stateName = fieldStateName.val();
 	var selectedCountry = $("#dropDownCountriesForStates option:selected");
@@ -120,6 +133,9 @@ function addState() {
 
 
 function updateState() {
+	if (!validateStateForm()) {
+		return;
+	}
 	url = contextPath + "states/save";
 	var stateId = dropDownStates.val();
 	var stateName = fieldStateName.val();

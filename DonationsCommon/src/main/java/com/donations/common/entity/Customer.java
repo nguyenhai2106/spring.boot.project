@@ -27,7 +27,7 @@ public class Customer {
 	private String password;
 
 	@Nationalized
-	@Column(name = "first_name", nullable = false, unique = true, length = 64)
+	@Column(name = "first_name", nullable = false, length = 64)
 	private String firstName;
 
 	@Nationalized
@@ -36,19 +36,19 @@ public class Customer {
 
 	@Column(name = "phone_number", nullable = false, unique = true, length = 16)
 	private String phoneNumber;
-	
+
 	@Nationalized
 	@Column(name = "address_line_1", nullable = false, length = 64)
 	private String addressLine1;
-	
+
 	@Nationalized
 	@Column(name = "address_line_2", nullable = false, length = 64)
 	private String addressLine2;
-	
+
 	@Nationalized
 	@Column(nullable = false, length = 64)
 	private String city;
-	
+
 	@Nationalized
 	@Column(nullable = false, length = 64)
 	private String state;
@@ -58,7 +58,7 @@ public class Customer {
 
 	@Column(name = "created_time")
 	private Date createdTime;
- 
+
 	private boolean enabled;
 
 	@Column(name = "verification_code", length = 16)
@@ -189,6 +189,10 @@ public class Customer {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	public String getFullName() {
+		return this.firstName + " " + this.lastName;
 	}
 
 	@Override

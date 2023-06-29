@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.Nationalized;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class Country {
 	@Column(nullable = false, unique = true, length = 8)
 	private String code;
 
-	@OneToMany(mappedBy = "country")
+	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
 	private Set<State> states;
 
 	public Country() { 

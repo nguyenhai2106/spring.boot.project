@@ -1,4 +1,4 @@
-package com.donations.admin.category.controller;
+package com.donations.admin.category;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 

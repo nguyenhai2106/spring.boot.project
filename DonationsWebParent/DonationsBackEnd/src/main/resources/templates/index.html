@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments :: page_head('Donations Admin - Home Page', 'none')" />
+<head
+	th:replace="~{fragments :: page_head('Donations Admin - Home Page', 'none')}" />
 </head>
 <body>
 	<div class="container-fluid">
-		<div th:replace="navigation :: navigationMenu"></div>
+		<div th:replace="~{navigation :: navigationMenu}"></div>
 		<div>
 			<h2>Donations Admin Panel</h2>
 			Welcome <a class="text-primary" th:href="@{/account}"
@@ -13,8 +14,8 @@
 				sec:authentication="principal.authorities"></span>
 		</div>
 	</div>
-	<div th:replace="fragments :: footer"></div>
-	
+	<div th:replace="~{fragments :: footer}"></div>
+
 	<script type="text/javascript">
 		
 	</script>
