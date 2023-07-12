@@ -38,7 +38,7 @@
 			</div>
 		</div>
 
-		<div th:replace="~{fragments :: search_form('/users/page/1')}"></div>
+		<div th:replace="~{fragments :: search_form()}"></div>
 
 		<div class="container d-none d-lg-block">
 			<table
@@ -46,17 +46,17 @@
 				<thead class="table-dark">
 					<tr>
 						<th
-							th:replace="~{fragments :: column_link('/users', 'id', 'User ID')}" />
+							th:replace="~{fragments :: column_link('id', 'User ID')}" />
 						<th class="text-center align-middle">Photo</th>
 						<th
-							th:replace="~{fragments :: column_link('/users',  'email', 'Email')}" />
+							th:replace="~{fragments :: column_link('email', 'Email')}" />
 						<th
-							th:replace="~{fragments :: column_link('/users', 'firstName', 'First Name')}" />
+							th:replace="~{fragments :: column_link('firstName', 'First Name')}" />
 						<th
-							th:replace="~{fragments :: column_link('/users', 'lastName', 'Last Name')}" />
+							th:replace="~{fragments :: column_link('lastName', 'Last Name')}" />
 						<th class="text-center align-middle">Role</th>
 						<th
-							th:replace="~{fragments :: column_link('/users', 'enabled', 'Enabled')}" />
+							th:replace="~{fragments :: column_link('enabled', 'Enabled')}" />
 						<th class="text-center">&nbsp;</th>
 					</tr>
 				</thead>
@@ -128,12 +128,12 @@
 					<tr>
 						<th class="text-center align-middle">Photo</th>
 						<th
-							th:replace="~{fragments :: column_link('/users', 'firstName', 'First Name')}" />
+							th:replace="~{fragments :: column_link('firstName', 'First Name')}" />
 						<th
-							th:replace="~{fragments :: column_link('/users', 'lastName', 'Last Name')}" />
+							th:replace="~{fragments :: column_link('lastName', 'Last Name')}" />
 						<th class="text-center align-middle">Role</th>
 						<th
-							th:replace="~{fragments :: column_link('/users', 'enabled', 'Enabled')}" />
+							th:replace="~{fragments :: column_link('enabled', 'Enabled')}" />
 						<th class="text-center">&nbsp;</th>
 					</tr>
 				</thead>
@@ -186,7 +186,7 @@
 				</div>
 			</div>
 		</div>
-		<div th:replace="~{fragments :: pagination('users', 'user')}"></div>
+		<div th:replace="~{fragments :: pagination('user')}"></div>
 		<div th:replace="~{fragments :: footer}"></div>
 	</div>
 	<script

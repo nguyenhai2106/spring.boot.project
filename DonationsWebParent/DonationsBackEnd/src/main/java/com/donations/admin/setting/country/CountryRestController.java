@@ -20,9 +20,6 @@ public class CountryRestController {
 	@GetMapping("/countries/list")
 	public List<Country> listAll() {
 		List<Country> countries = repository.findAllByOrderByNameAsc();
-		for (Country country : countries) {
-			System.out.println(country);
-		}
 		return countries;
 	}
 

@@ -82,14 +82,14 @@
 				<thead class="table-dark">
 					<tr>
 						<th
-							th:replace="~{fragments :: column_link('/products', 'id', 'ID')}"></th>
+							th:replace="~{fragments :: column_link('id', 'ID')}"></th>
 						<th class="text-center align-middle">Product Image</th>
 						<th
-							th:replace="~{fragments :: column_link('/products', 'name', 'Product Name')}"></th>
+							th:replace="~{fragments :: column_link('name', 'Product Name')}"></th>
 						<th
-							th:replace="~{fragments :: column_link('/products', 'brand', 'Brand')}"></th>
+							th:replace="~{fragments :: column_link('brand', 'Brand')}"></th>
 						<th
-							th:replace="~{fragments :: column_link('/products', 'category', 'Category')}"></th>
+							th:replace="~{fragments :: column_link('category', 'Category')}"></th>
 						<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 							<th class="text-center align-middle">Enabled</th>
 						</th:block>
@@ -197,7 +197,7 @@
 			</div>
 		</div>
 
-		<div th:replace="~{fragments :: pagination('products', 'products')}"></div>
+		<div th:replace="~{fragments :: pagination('products')}"></div>
 		<div th:replace="~{fragments :: footer}"></div>
 	</div>
 	<script

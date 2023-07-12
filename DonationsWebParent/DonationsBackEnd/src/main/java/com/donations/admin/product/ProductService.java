@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.donations.admin.paging.PagingAndSortingHelper;
 import com.donations.common.entity.Product;
+import com.donations.common.entity.User;
 import com.donations.common.exception.ProductNotFoundException;
 
 @Service
@@ -84,21 +86,27 @@ public class ProductService {
 		}
 	}
 
-	public Page<Product> listByPage(int pageNum, String sortFied, String sortDir, String keyword, Integer categoryId) {
-		Sort sort = Sort.by(sortFied);
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+	public void listByPage(int pageNum, PagingAndSortingHelper helper, Integer categoryId) {
+		Sort sort = Sort.by(helper.getSortField());
+		sort = helper.getSortDir().equals("asc") ? sort.ascending() : sort.descending();
 		Pageable pageable = PageRequest.of(pageNum - 1, PRODUCTS_PER_PAGE, sort);
+		Page<Product> page = null;
+		String keyword = helper.getKeyword();
 		if (keyword != null && !keyword.isEmpty()) {
 			if (categoryId != null && categoryId > 0) {
 				String categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
-				return repository.searchWithCategory(categoryId, categoryIdMatch, keyword, pageable);
+				page = repository.searchWithCategory(categoryId, categoryIdMatch, keyword, pageable);
+			} else {
+				page = repository.findAll(keyword, pageable);
 			}
-			return repository.findAll(keyword, pageable);
+		} else {
+			if (categoryId != null && categoryId > 0) {
+				String categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
+				page = repository.findAllWithCategory(categoryId, categoryIdMatch, pageable);
+			} else {
+				page = repository.findAll(pageable);
+			}
 		}
-		if (categoryId != null && categoryId > 0) {
-			String categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
-			return repository.findAllWithCategory(categoryId, categoryIdMatch, pageable);
-		}
-		return repository.findAll(pageable);
+		helper.updateModelAttributes(pageNum, page);
 	}
 }

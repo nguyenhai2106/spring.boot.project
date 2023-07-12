@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments :: page_head('Donations Admin - Error Page', 'none')" />
+<head th:replace="~{fragments :: page_head('Donations Admin - Error Page', 'none')}" />
 </head>
 <body>
 	<div class="container-fluid">
-		<div th:replace="navigation :: navigationMenu"></div>
+		<div th:replace="~{navigation :: navigationMenu}"></div>
 		<div class="m-3 text-center">
 			<h2>Sorry, an unexpected error has occurred!</h2>
 		</div>
 	</div>
-	<div th:replace="fragments :: footer"></div>
+	<div th:replace="~{fragments :: footer}"></div>
 	
 	<script type="text/javascript">
 		

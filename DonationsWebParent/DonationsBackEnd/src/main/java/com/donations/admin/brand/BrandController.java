@@ -17,8 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donations.admin.FileUploadUtil;
-import com.donations.admin.category.CategoryCsvExporter;
 import com.donations.admin.category.CategoryService;
+import com.donations.admin.paging.PagingAndSortingHelper;
+import com.donations.admin.paging.PagingAndSortingParam;
 import com.donations.common.entity.Brand;
 import com.donations.common.entity.Category;
 
@@ -26,7 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class BrandController {
-	private String defaultRedirectURL = "redirect:/brands/page/1?sortField=name&sortDir=asc";
+	private String defaultRedirectURL = "redirect:/brands/page/1?sortField=id&sortDir=asc";
 	@Autowired
 	private BrandService service;
 
@@ -34,8 +35,8 @@ public class BrandController {
 	private CategoryService categoryService;
 
 	@GetMapping("/brands")
-	public String listAll(Model model) {
-		return listByPage(1, model, "name", "asc", null);
+	public String listAll() {
+		return defaultRedirectURL;
 	}
 
 	@GetMapping("/brands/new")
@@ -97,37 +98,20 @@ public class BrandController {
 	}
 
 	@GetMapping("/brands/page/{pageNum}")
-	public String listByPage(@PathVariable(name = "pageNum") int pageNum, Model model,
-			@Param("sortField") String sortField, @Param("sortDirt") String sortDir, @Param("keyword") String keyword) {
-		if (pageNum < 1) {
-			pageNum = 1;
-		}
-		Page<Brand> page = service.listByPage(pageNum, sortField, sortDir, keyword);
-		List<Brand> listBrands = page.getContent();
-		long startCount = (pageNum - 1) * BrandService.BRAND_PER_PAGE + 1;
-		long endCount = startCount + BrandService.BRAND_PER_PAGE - 1;
-		if (endCount > page.getTotalElements()) {
-			endCount = page.getTotalElements();
-		}
-		String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-		model.addAttribute("currentPage", pageNum);
-		model.addAttribute("startCount", startCount);
-		model.addAttribute("endCount", endCount);
-		model.addAttribute("listBrands", listBrands);
-		model.addAttribute("reverseSortDir", reverseSortDir);
-		model.addAttribute("sortField", sortField);
-		model.addAttribute("sortDir", sortDir);
-		model.addAttribute("keyword", keyword);
-		model.addAttribute("totalPages", page.getTotalPages());
-		model.addAttribute("totalItems", page.getTotalElements());
+	public String listByPage(
+			@PagingAndSortingParam(listName = "listBrands", moduleURL = "/brands") PagingAndSortingHelper helper,
+			@PathVariable(name = "pageNum") int pageNum) {
+
+		service.listByPage(pageNum, helper);
+
 		return "brands/brands";
 	}
-	
+
 	@GetMapping("/brands/export/csv")
 	public void exportToCSV(HttpServletResponse response) throws IOException {
 		List<Brand> listBrands = service.listAll();
 		BrandCsvExporter exporter = new BrandCsvExporter();
 		exporter.export(listBrands, response);
 	}
-	
+
 }

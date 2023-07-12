@@ -2,7 +2,7 @@ $(document)
 	.ready(
 		function() {
 			$("#buttonCancel").click(function() {
-				window.location = moduleURL;
+				window.location = contextPath;
 			});
 			$("#fileImage")
 				.change(

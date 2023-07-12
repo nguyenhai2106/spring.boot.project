@@ -31,7 +31,7 @@
 			</div>
 		</div>
 
-		<div th:replace="~{fragments :: search_form('/brands/page/1')}"></div>
+		<div th:replace="~{fragments :: search_form()}"></div>
 
 		<div class="container d-none d-sm-block">
 			<table
@@ -40,7 +40,7 @@
 					<tr>
 						<th class="text-center align-middle">ID</th>
 						<th class="text-center align-middle">Brand Image</th>
-						<th th:replace="~{fragments :: column_link('/brands', 'name', 'Brand Name')}"></th>
+						<th th:replace="~{fragments :: column_link('name', 'Brand Name')}"></th>
 						<th class="text-center align-middle">Categories</th>
 						<th class="text-center">&nbsp;</th>
 					</tr>
@@ -129,7 +129,7 @@
 				</div>
 			</div>
 		</div>
-		<div th:replace="~{fragments :: pagination('brands', 'brands')}"></div>
+		<div th:replace="~{fragments :: pagination('brands')}"></div>
 		<div th:replace="~{fragments :: footer}"></div>
 	</div>
 	<script

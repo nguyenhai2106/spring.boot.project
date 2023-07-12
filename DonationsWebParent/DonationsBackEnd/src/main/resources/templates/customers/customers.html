@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head
+	th:replace="~{fragments :: page_head('Customer Manage Page', 'none')}" />
+</head>
+<body>
+	<div class="container-fluid mb-2">
+		<div th:replace="~{navigation :: navigationMenu}"></div>
+		<div class="container mt-2">
+			<h2 align="center">Manage Customer</h2>
+			<div class="d-none d-sm-block text-center">
+				<a class="btn btn-secondary mb-2" th:href="@{/customers/export/csv}">Export
+					To CSV</a> <a class="btn btn-success mb-2"
+					th:href="@{/customers/export/excel}">Export To Excel</a> <a
+					class="btn btn-warning mb-2" th:href="@{/customers/export/pdf}">Export
+					To PDF</a>
+			</div>
+			<div class="d-md-none d-lg-none text-center">
+				<a class="mb-2 fas fa-file-csv fa-2x icon-dark me-3"
+					th:href="@{/customers/export/csv}"></a> <a
+					class="mb-2 fas fa-file-excel fa-2x icon-dark me-3"
+					th:href="@{/customers/export/excel}"></a> <a
+					class="mb-2 fas fa-file-pdf fa-2x icon-dark"
+					th:href="@{/customers/export/<pdf></pdf>}"></a>
+			</div>
+		</div>
+		<div th:if="${message != null}"
+			class="alert alert-success alert-dismissible fade show col-8 mx-auto text-center"
+			role="alert">
+			[[${message}]]
+			<button type="button" class="btn-close" data-bs-dismiss="alert"
+				aria-label="Close"></button>
+		</div>
+	</div>
+	<div th:replace="~{fragments :: search_form()}"></div>
+
+	<div class="container d-none d-lg-block">
+		<table
+			class="table table-bordered table-striped table-hover table-responsive-xl">
+			<thead class="table-dark">
+				<tr>
+					<th th:replace="~{fragments :: column_link('id', 'ID')}" />
+					<th
+						th:replace="~{fragments :: column_link( 'firstName', 'First Name')}" />
+					<th
+						th:replace="~{fragments :: column_link('lastName', 'Last Name')}" />
+					<th th:replace="~{fragments :: column_link('email', 'Email')}" />
+					<th th:replace="~{fragments :: column_link( 'city', 'City')}" />
+					<th th:replace="~{fragments :: column_link( 'state', 'State')}" />
+					<th th:replace="~{fragments :: column_link('country', 'Country')}" />
+					<th
+						th:replace="~{fragments :: column_link('enabled', 'Enabled')}" />
+					<th class="text-center">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="customer : ${customerList}">
+					<td class="text-center align-middle">[[${customer.id}]]</td>
+					<td class="align-middle">[[${customer.firstName}]]</td>
+					<td class="align-middle">[[${customer.lastName}]]</td>
+					<td class="align-middle">[[${customer.email}]]</td>
+					<td class="text-center align-middle">[[${customer.city}]]</td>
+					<td class="text-center align-middle">[[${customer.state}]]</td>
+					<td class="text-center align-middle">[[${customer.country.name}]]</td>
+					<td class="text-center align-middle"><a
+						th:replace="~{fragments :: status(${customer.enabled}, 'Customer', '/customers/' + ${customer.id})}"></a>
+					</td>
+					<td class="text-center align-middle "><a
+						th:href="@{'/customers/detail/' + ${customer.id}}"
+						title="View this customer" class="pe-2 link-detail"> <i
+							class="fas fa-file-alt text-primary" aria-hidden="true"></i>
+					</a>
+						<div
+							th:replace="~{fragments :: edit('customer', '/customers/edit/' + ${customer.id})}">
+						</div>
+						<div
+							th:replace="~{fragments :: delete('customer', ${customer.id}, '/customers/delete/' + ${customer.id})}">
+						</div></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Tablet -->
+	<div class="container d-none d-md-block d-lg-none">
+		<table class="table table-bordered table-striped table-responsive-xl">
+			<thead class="table-dark">
+				<tr>
+					<th class="text-center align-middle">Id</th>
+					<th
+						th:replace="~{fragments :: column_link('firstName', 'First Name')}" />
+					<th
+						th:replace="~{fragments :: column_link('lastName', 'Last Name')}" />
+					<th th:replace="~{fragments :: column_link('country', 'Country')}" />
+					<th th:replace="~{fragments :: column_link( 'enabled', 'Enabled')}" />
+					<th class="text-center">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="customer : ${customerList}">
+					<td class="text-center align-middle">[[${customer.id}]]</td>
+					<td class="text-center align-middle">[[${customer.firstName}]]</td>
+					<td class="text-center align-middle">[[${customer.lastName}]]</td>
+					<td class="text-center align-middle">[[${customer.country.name}]]</td>
+					<td class="text-center align-middle">
+						<div
+							th:replace="~{fragments :: status(${customer.enabled}, 'customer', '/customers/' + ${customer.id})}"></div>
+					</td>
+					<td class="text-center align-middle "><a
+						th:href="@{'/customers/detail/' + ${customer.id}}"
+						title="View this customer" class="pe-2 link-detail"> <i
+							class="fas fa-file-alt text-primary" aria-hidden="true"></i>
+					</a>
+						<div
+							th:replace="~{fragments :: edit('customer', '/customers/edit/' + ${customer.id})}">
+						</div>
+						<div
+							th:replace="~{fragments :: delete('customer', ${customer.id}, '/customers/delete/' + ${customer.id})}">
+						</div></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Smartphone -->
+	<div class="container d-block d-sm-none">
+		<table class="table table-bordered table-striped table-responsive-xl">
+			<tbody>
+				<tr th:each="customer : ${customerList}">
+					<td class="align-middle text-center">
+						<div>[[${customer.id}]]</div>
+					</td>
+					<td class="align-middle w-50">
+						<div>[[${customer.getFullName()}]]</div>
+					</td>
+					<td class="text-center align-middle"><a
+						th:if="${customer.enabled == true}"
+						class="fa fa-check-circle text-decoration-none icon-green pe-1"
+						th:href="@{'/customers/' + ${customer.id} + '/enabled/false' + '?pageNum=' + ${currentPage}+ '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword='+${keyword}}"
+						title="Disable this customer"></a> <a
+						th:if="${customer.enabled == false}"
+						class="fa fa-circle text-decoration-none icon-silver pe-1"
+						th:href="@{'/customers/' + ${customer.id} + '/enabled/true' + '?pageNum=' + ${currentPage}+ '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword='+${keyword}}"
+						title="Enable this customer"></a></td>
+					<td class="d-flex justify-content-center"
+						style="border-left: none;"><div
+							th:replace="~{fragments :: edit('customer', '/customers/edit/' + ${customer.id})}">
+						</div>
+						<div
+							th:replace="~{fragments :: delete('customer', ${customer.id}, '/customers/delete/' + ${customer.id})}">
+						</div></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="modal fade text-center" id="confirmModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Delete Confirmation</h4>
+					<button type="button" class="close" data-bs-dismiss="modal"
+						aria-label="Close">&times;</button>
+				</div>
+
+				<div class="modal-body">
+					<span id="confirmText"></span>
+				</div>
+
+				<div class="modal-footer">
+					<a class="btn btn-primary text-decoration-none" href=""
+						id="yesButton">Yes</a>
+					<button type="button" class="btn btn-danger"
+						data-bs-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="detailModal">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content"></div>
+		</div>
+	</div>
+	<div th:replace="~{fragments :: pagination('customers')}"></div>
+	<div th:replace="~{fragments :: footer}"></div>
+	<script th:src="@{/js/common_list.js}"></script>
+	<script type="text/javascript">
+		let moduleURL = "[[@{/customers}]]";
+		$(document).ready(
+			function() {
+				$(".link-delete").on("click", function(e) {
+					e.preventDefault();
+					let link = $(this);
+					let customerId = link.attr("entityId");
+					$("#yesButton").attr("href", link.attr("href"));
+					$("#confirmText").text("Are you sure want to delete this customer ID " + customerId + "?");
+					$("#confirmModal").modal("show");
+				})
+				
+				$(".link-detail").click(
+							function(e) {
+								e.preventDefault();
+								let detailURL = $(this).attr("href");
+								$("#detailModal").modal("show").find(
+										".modal-content").load(detailURL);
+				})
+			});
+		function clearFilter() {
+			window.location = "[[@{/customers}]]"
+		}
+	</script>
+</body>
+</html>

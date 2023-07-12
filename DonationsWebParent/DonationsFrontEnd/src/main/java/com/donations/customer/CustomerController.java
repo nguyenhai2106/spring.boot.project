@@ -6,15 +6,23 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.RememberMeAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donations.Utility;
 import com.donations.common.entity.Country;
 import com.donations.common.entity.Customer;
+import com.donations.security.CustomerUserDetails;
+import com.donations.security.oauth.CustomerOAuth2User;
 import com.donations.setting.EmailSettingBag;
 import com.donations.setting.SettingService;
 
@@ -78,5 +86,70 @@ public class CustomerController {
 	public String verifyAccount(@RequestParam("code") String verificationCode, Model model) {
 		boolean verified = customerService.verifyAccount(verificationCode);
 		return "register/" + (verified ? "verify_success" : "verify_fail");
+	}
+
+	@GetMapping("/account_details")
+	public String viewAccountDetails(Model model, HttpServletRequest request) {
+		String email = getEmailOfAuthencicatedCustomer(request);
+		Customer customer = customerService.getCustomerByEmail(email);
+		List<Country> countriesList = customerService.listAllCountries();
+		model.addAttribute("pageTitle", "Your Account Details");
+		model.addAttribute("customer", customer);
+		model.addAttribute("countriesList", countriesList);
+		return "customer/account_form";
+	}
+
+	private String getEmailOfAuthencicatedCustomer(HttpServletRequest request) {
+		Object principal = request.getUserPrincipal();
+		String customerEmail = null;
+		if (principal instanceof UsernamePasswordAuthenticationToken
+				|| principal instanceof RememberMeAuthenticationToken) {
+			customerEmail = request.getUserPrincipal().getName();
+		} else if (principal instanceof OAuth2AuthenticationToken) {
+			OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) principal;
+			CustomerOAuth2User oAuth2User = (CustomerOAuth2User) oAuth2AuthenticationToken.getPrincipal();
+			customerEmail = oAuth2User.getEmail();
+		}
+		return customerEmail;
+	}
+
+	@PostMapping("/update_account_details")
+	private String updateAccountDetails(Model model, Customer customer, RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
+		updateNameForAuthenticatedCustomer(customer, request);
+		customerService.update(customer);
+		redirectAttributes.addFlashAttribute("message", "Your account details have been updated.");
+		return "redirect:/account_details";
+	}
+
+	private void updateNameForAuthenticatedCustomer(Customer customer, HttpServletRequest request) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()) {
+			Object principal = request.getUserPrincipal();
+			if (principal instanceof UsernamePasswordAuthenticationToken
+					|| principal instanceof RememberMeAuthenticationToken) {
+				CustomerUserDetails userDetails = getCustomerUserDetailsObject(principal);
+				Customer authenticatedCustomer = userDetails.getCustomer();
+				authenticatedCustomer.setFirstName(customer.getFirstName());
+				authenticatedCustomer.setLastName(customer.getLastName());
+			} else if (principal instanceof OAuth2AuthenticationToken) {
+				OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) principal;
+				CustomerOAuth2User oAuth2User = (CustomerOAuth2User) oAuth2AuthenticationToken.getPrincipal();
+				String fullName = customer.getFullName();
+				oAuth2User.setFullName(fullName);
+			}
+		}
+	}
+
+	private CustomerUserDetails getCustomerUserDetailsObject(Object principal) {
+		CustomerUserDetails customerUserDetails = null;
+		if (principal instanceof UsernamePasswordAuthenticationToken) {
+			UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+			customerUserDetails = (CustomerUserDetails) token.getPrincipal();
+		} else if (principal instanceof RememberMeAuthenticationToken) {
+			RememberMeAuthenticationToken token = (RememberMeAuthenticationToken) principal;
+			customerUserDetails = (CustomerUserDetails) token.getPrincipal();
+		}
+		return customerUserDetails;
 	}
 }

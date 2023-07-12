@@ -31,7 +31,7 @@
 			</div>
 		</div>
 
-		<div th:replace="~{fragments :: search_form('/categories/page/1')}"></div>
+		<div th:replace="~{fragments :: search_form()}"></div>
 
 		<div class="container d-none d-sm-block">
 			<table
@@ -40,7 +40,7 @@
 					<tr>
 						<th class="text-center align-middle">ID</th>
 						<th class="text-center align-middle">Category Image</th>
-						<th th:replace="~{fragments :: column_link('/categories', name, 'Category Name')}"></th>
+						<th th:replace="~{fragments :: column_link(name, 'Category Name')}"></th>
 						<th class="text-center align-middle">Alias</th>
 						<th class="text-center align-middle">Enabled</th>
 						<th class="text-center">&nbsp;</th>
@@ -135,10 +135,10 @@
 		</div>
 		<div th:if="${keyword != null}" class="text-center">
 			<span>Search result does not show categories in hierarchical form!</span>
-			<div th:replace="~{fragments :: pagination('categories', 'categories')}"></div>
+			<div th:replace="~{fragments :: pagination('categories')}"></div>
 		</div>
 		<th:block th:if="${keyword == null}">
-			<div th:replace="~{fragments :: pagination('categories', 'top-level categories')}"></div>
+			<div th:replace="~{fragments :: pagination('top-level categories')}"></div>
 		</th:block>
 		<div th:replace="~{fragments :: footer}"></div>
 	</div>

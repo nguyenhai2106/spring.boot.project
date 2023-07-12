@@ -1,0 +1,35 @@
+server:
+  port: 80
+  servlet:
+    context-path: /Donations
+spring:
+  datasource:
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    password: sa
+    url: jdbc:sqlserver://localhost;databaseName=shoppingdb
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+        format_sql: true
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 39181326002-kovsultgova0ptud7tedc2vdrtbd5pbg.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+            - email
+            - profile
+          facebook:
+            client-id: 234993356134155
+            client-secret: 09f99331f55e6ab3c2154da9553572b8
+            scope:
+            - email
+            - public_profile
+          

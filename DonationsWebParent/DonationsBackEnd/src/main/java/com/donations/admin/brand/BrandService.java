@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.donations.admin.paging.PagingAndSortingHelper;
 import com.donations.common.entity.Brand;
 
 import jakarta.transaction.Transactional;
@@ -46,29 +47,23 @@ public class BrandService {
 		}
 	}
 
-	
 	public String checkUnique(Integer id, String name) {
 		boolean isCreatingNew = (id == null || id == 0);
 		Brand brandByName = repository.findByName(name);
-		
+
 		if (isCreatingNew) {
-			if (brandByName != null) return "Duplicated";
+			if (brandByName != null)
+				return "Duplicated";
 		} else {
 			if (brandByName != null && brandByName.getId() != id) {
 				return "Duplicated";
 			}
 		}
-		
+
 		return "OK";
 	}
-	
-	public Page<Brand> listByPage(int pageNum, String sortFied, String sortDir, String keyword) {
-		Sort sort = Sort.by(sortFied);
-		sort = sortDir.equals("asc")? sort.ascending() : sort.descending();
-		Pageable pageable = PageRequest.of(pageNum-1, BRAND_PER_PAGE, sort);
-		if (keyword!=null) {
-			return repository.findAll(keyword, pageable);
-		}
-		return repository.findAll(pageable);
+
+	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+		helper.listEntities(pageNum, BRAND_PER_PAGE, repository);
 	}
 }

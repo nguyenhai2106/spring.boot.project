@@ -6,6 +6,8 @@ import org.hibernate.annotations.Nationalized;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,10 +33,10 @@ public class Customer {
 	private String firstName;
 
 	@Nationalized
-	@Column(name = "last_name", nullable = false, unique = true, length = 64)
+	@Column(name = "last_name", nullable = false, length = 64)
 	private String lastName;
 
-	@Column(name = "phone_number", nullable = false, unique = true, length = 16)
+	@Column(name = "phone_number", nullable = false, length = 16)
 	private String phoneNumber;
 
 	@Nationalized
@@ -68,8 +70,16 @@ public class Customer {
 	@JoinColumn(name = "country_id")
 	private Country country;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "authentication_type", length = 10)
+	private AuthenticationType authenticationType;
+	
+	@Column(name = "reset_password_token", length = 30)
+	private String resetPasswordToken;
+
 	public Customer() {
 	}
+
 
 	public Integer getId() {
 		return id;
@@ -193,6 +203,22 @@ public class Customer {
 
 	public String getFullName() {
 		return this.firstName + " " + this.lastName;
+	}
+
+	public AuthenticationType getAuthenticationType() {
+		return authenticationType;
+	}
+
+	public void setAuthenticationType(AuthenticationType authenticationType) {
+		this.authenticationType = authenticationType;
+	}
+
+	public String getResetPasswordToken() {
+		return resetPasswordToken;
+	}
+
+	public void setResetPasswordToken(String resetPasswordToken) {
+		this.resetPasswordToken = resetPasswordToken;
 	}
 
 	@Override

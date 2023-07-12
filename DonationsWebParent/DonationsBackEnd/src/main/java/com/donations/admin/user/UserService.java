@@ -1,7 +1,5 @@
 package com.donations.admin.user;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -13,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.donations.admin.paging.PagingAndSortingHelper;
 import com.donations.common.entity.Role;
 import com.donations.common.entity.User;
 
@@ -21,7 +20,7 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class UserService {
-	public static final int USERS_PER_PAGE = 5;
+	public static final int USERS_PER_PAGE = 10;
 	@Autowired
 	private UserRepository userRepository;
 
@@ -35,16 +34,8 @@ public class UserService {
 		return (List<User>) userRepository.findAll();
 	}
 
-	public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-		Sort sort = Sort.by(sortField);
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-		Pageable pageable = PageRequest.of(pageNum - 1, USERS_PER_PAGE, sort);
-
-		if (keyword != null) {
-			return userRepository.findAll(keyword, pageable);
-		}
-
-		return userRepository.findAll(pageable);
+	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+		helper.listEntities(pageNum, USERS_PER_PAGE, userRepository);
 	}
 
 	public List<Role> listRoles() {

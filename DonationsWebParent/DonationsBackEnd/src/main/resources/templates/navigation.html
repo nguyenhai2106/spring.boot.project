@@ -74,14 +74,13 @@
 							</li>
 						</th:block>
 						<th:block
-							sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper', 'Assistant')">
+							sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')">
 							<li class="nav-item">
 								<div class="btn-group">
 									<div class="dropdown">
 										<a class="btn dropdown-toggle" th:href="@{/products}"
 											role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
 											aria-expanded="false" style="border: none; margin-top: 2px;">Products</a>
-
 										<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 											<li><a class="dropdown-item" th:href="@{/products/new}"
 												sec:authorize="hasAnyAuthority('Admin','Editor')">Create
@@ -93,12 +92,23 @@
 								</div>
 							</li>
 						</th:block>
-
-						<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
-							<li class="nav-item"><a class="nav-link"
-								th:href="@{/customers}">Customers</a></li>
+						
+						<th:block
+							sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+							<li class="nav-item">
+								<div class="btn-group">
+									<div class="dropdown">
+										<a class="btn dropdown-toggle" th:href="@{/customers}"
+											role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+											aria-expanded="false" style="border: none; margin-top: 2px;">Customers</a>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+											<li><a class="dropdown-item" th:href="@{/customers}">View
+													All Customers</a></li>
+										</ul>
+									</div>
+								</div>
+							</li>
 						</th:block>
-
 						<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
 							<li class="nav-item"><a class="nav-link"
 								th:href="@{/shipping}">Shipping</a></li>

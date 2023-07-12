@@ -1,13 +1,14 @@
 package com.donations.customer;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
+import com.donations.common.entity.AuthenticationType;
 import com.donations.common.entity.Customer;
+import java.util.List;
 
-public interface CustomerRepository extends CrudRepository<Customer, Integer> {
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
 	@Query("SELECT c FROM Customer c WHERE c.email = ?1")
 	public Customer findByEmail(String email);
@@ -18,4 +19,11 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 	@Query("UPDATE Customer c SET c.enabled = true, c.verificationCode = null WHERE c.id = ?1")
 	@Modifying
 	public void enable(Integer id);
+
+	@Query("UPDATE Customer c SET c.authenticationType = ?2 WHERE c.id = ?1")
+	@Modifying
+	public void updateAuthenticationType(Integer customerId, AuthenticationType authenticationType);
+
+	@Query("SELECT c FROM Customer c WHERE c.resetPasswordToken = ?1")
+	public Customer findByResetPasswordToken(String resetPasswordToken);
 }

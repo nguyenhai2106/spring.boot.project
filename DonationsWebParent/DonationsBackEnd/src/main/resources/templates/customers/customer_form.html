@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: page_head(${pageTitle}, 'none')}" />
+<body>
+	<div class="container-fluid">
+		<div th:replace="~{navigation :: navigationMenu}"></div>
+		<div align="center" class="mt-4">
+			<h3>Manage Customers | [[${pageTitle}]]</h3>
+		</div>
+		<form th:action="@{/customers/save}" method="post"
+			style="max-width: 800px; margin: 30px auto;" th:object="${customer}"
+			onsubmit="return checkEmailUnique(this);"
+			enctype="multipart/form-data">
+			<input type="hidden" th:field="*{id}">
+			<div class="border border-secondary rounded p-4 pe-0">
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">First Name</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{firstName}"
+							required="required" maxlength="64" minlength="2" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Last Name</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{lastName}"
+							required="required" maxlength="64" minlength="2" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Email</label>
+					<div class="col-sm-9">
+						<input type="email" class="form-control" th:field="*{email}"
+							required="required" maxlength="128" minlength="8" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Password</label>
+					<div class="col-sm-9">
+						<input type="password" class="form-control" th:field="*{password}"
+							maxlength="64" minlength="8"
+							placeholder="Leave blank if you don't want to change password" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Phone Number</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{phoneNumber}"
+							required="required" maxlength="12" minlength="9" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Address Line 1</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{addressLine1}"
+							required="required" maxlength="64" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Address Line 2</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{addressLine2}"
+							required="required" maxlength="64" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">City</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{city}"
+							required="required" maxlength="64" minlength="3" />
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Country</label>
+					<div class="col-sm-9">
+						<select class="form-select" th:field="*{country}"
+							required="required">
+							<th:block th:each="country : ${countryList}">
+								<option th:value="${country.id}">[[${country.name}]]</option>
+							</th:block>
+						</select>
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">State</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{state}"
+							required="required" maxlength="64" minlength="3" list="states" />
+						<datalist id="states"></datalist>
+					</div>
+				</div>
+				<div class="input-group mb-3 row">
+					<label class="col-sm-3 col-form-label">Postal Code</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:field="*{postalCode}"
+							required="required" maxlength="6" minlength="3" />
+					</div>
+				</div>
+				<div class="mt-4 text-center">
+					<input type="submit" value="Save" class="btn btn-primary me-2" />
+					<input type="button" value="Cancel" class="btn btn-secondary"
+						id="buttonCancel" />
+				</div>
+			</div>
+		</form>
+		<div th:replace="~{modal_fragments :: modal_dialog}"></div>
+		<div th:replace="~{fragments :: footer}"></div>
+	</div>
+	<script type="text/javascript">
+		contextPath = "[[@{/}]]";
+		moduleURL = "[[@{/customers}]]";	
+	
+		function checkEmailUnique(form) {
+			url = "[[@{/customers/check_email}]]";
+			customerEmail = $("#email").val();
+			customerId = $("#id").val();
+			csrfValue = $("input[name='_csrf']").val();
+			params = {
+				id : customerId,
+				email : customerEmail,
+				_csrf : csrfValue
+			};
+			$
+					.post(
+							url,
+							params,
+							function(response) {
+								if (response == "OK") {
+									form.submit();
+								} else if (response == "Duplicated") {
+									showWarningModal("There is another customer having the email "
+											+ customerEmail);
+								} else {
+									showErrorModal("Unknown response from server")
+								}
+							}).fail(function() {
+						showErrorModal("Could not connect to server")
+					});
+			return false;
+		}
+	</script>
+	<script th:src="@{/js/common_form.js}"></script>
+	<script th:src="@{/js/common_form_country_state.js}"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
+</body>
+</html>

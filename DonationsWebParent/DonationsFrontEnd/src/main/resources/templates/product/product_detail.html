@@ -71,55 +71,59 @@
 				<div class="col-12 col-lg-6 p-3">
 					<div class="product_detail-top-right-below">
 						<div class="product-detail-info">
-							<div class="product-summary-item">
+							<div class="product-summary-item row gy-2">
 								<div>
 									<span><b>Brand:</b> [[${product.brand.name}]]</span>
 								</div>
 								<div th:if="${product.discountPercent <= 0}">
-									<b>List Price: </b>
-									<b class="text-danger">
-										<th:block
-												th:replace="product/product_fragment::price_fragment(${product.price})"></th:block>
+									<b>List Price: </b> <b class="text-danger"> <th:block
+											th:replace="product/product_fragment::price_fragment(${product.price})"></th:block>
 									</b>
 								</div>
 								<div th:if="${product.discountPercent > 0}">
-									<b>List Price: </b>
-									<span class="text-secondary text-decoration-line-through">
-										<th:block
-												th:replace="product/product_fragment::price_fragment(${product.price})"></th:block>
+									<b>List Price: </b> <span
+										class="text-secondary text-decoration-line-through"> <th:block
+											th:replace="product/product_fragment::price_fragment(${product.price})"></th:block>
 									</span>
 								</div>
 								<div th:if="${product.discountPercent > 0}">
-									<b>Price: </b><span class="text-danger">
-											<th:block
-												th:replace="product/product_fragment::price_fragment(${product.discountPrice})"></th:block>
-										</span>
-										<span>( [[${#numbers.formatDecimal(product.discountPercent, 1, THOUSANDS_POINT_TYPE, 2, DECIMAL_POINT_TYPE)}]]%
-										OFF)</span> <span th:if="${product.inStock}"><b
-										class="text-success"> In Stock</b></span> <span
-										th:unless="${product.inStock}"><b class="text-danger">
-											Out Of Stock</b></span>
+									<b>Price: </b><span class="text-danger"> <th:block
+											th:replace="product/product_fragment::price_fragment(${product.discountPrice})"></th:block>
+									</span> <span>(
+										[[${#numbers.formatDecimal(product.discountPercent, 1,
+										THOUSANDS_POINT_TYPE, 2, DECIMAL_POINT_TYPE)}]]% OFF)</span> <span
+										th:if="${product.inStock}"><b class="text-success">
+											In Stock</b></span> <span th:unless="${product.inStock}"><b
+										class="text-danger"> Out Of Stock</b></span>
 								</div>
-								<div th:utext="${product.shortDescription}" class="ps-3"></div>
+								<div th:utext="${product.shortDescription}"
+									style="line-height: 30px; padding-left: 12px;"></div>
 							</div>
-							<div class="row g-3 align-items-center">
-								<div class="col-auto">
+							<div
+								class="d-flex flex-wrap align-items-center justify-content-between">
+								<div style="flex: 1">
 									<label for="quantity" class="col-form-label fw-bold">Quantity</label>
 								</div>
-								<div class="col-2">
-									<input type="text" id="quantity"
-										class="form-control text-center" value="1" />
+								<div style="flex: 2" class="ps-2 pe-2">
+									<input type="number" id="quantity"
+										class="form-control text-center" value="1" min="1" />
 								</div>
-							</div>
-							<div class="mt-3">
-								<input type="button" class="btn btn-danger" value="Add To Cart" />
+								<div style="flex: 7">
+									<button class="btn btn-warning px-3">
+										<i class="fa-solid fa-cart-shopping"></i><span>&ensp;
+											Add To Cart</span>
+									</button>
+									<button class="btn btn-danger px-5 ms-1">
+										<span>Buy Now</span>
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="">
-				<h4>Key Features and Benefits:</h4>
+				<h4 class="mb-4">Key Features and Benefits:</h4>
 				<div class="col-10 mx-auto" id="divProductDetails">
 					<table
 						class="table table-bordered table-striped table-hover table-responsive-xl">

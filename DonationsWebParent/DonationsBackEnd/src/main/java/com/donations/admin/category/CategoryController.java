@@ -1,12 +1,9 @@
 package com.donations.admin.category;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-
 import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,10 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.donations.admin.FileUploadUtil;
-import com.donations.admin.category.CategoryCsvExporter;
-import com.donations.admin.category.CategoryPageInfo;
-import com.donations.admin.category.CategoryService;
 import com.donations.common.entity.Category;
 import com.donations.common.exception.CategoryNotFoundException;
 
@@ -34,8 +29,8 @@ public class CategoryController {
 	private CategoryService service;
 
 	@GetMapping("/categories")
-	public String listFirstPage(@Param("sortDir") String sortDir, Model model) {
-		return listByPage(1, sortDir, model, null);
+	public String listFirstPage(Model model) {
+		return "redirect:/categories/page/1?sortField=firstName&sortDir=asc";
 	}
 
 	@GetMapping("/categories/page/{pageNum}")
@@ -71,6 +66,7 @@ public class CategoryController {
 		model.addAttribute("sortField", "name");
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("reverseSortDir", reverseSortDir);
+		model.addAttribute("moduleURL", "/categories");
 		return "categories/categories";
 	}
 
