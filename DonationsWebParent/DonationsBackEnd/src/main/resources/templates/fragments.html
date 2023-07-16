@@ -57,7 +57,7 @@
 					</li>
 					<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
 						<a class="page-link"
-							th:href="@{'/'+ ${moduleURL} + '/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">Last</a>
+							th:href="@{${moduleURL} + '/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">Last</a>
 					</li>
 				</ul>
 			</nav>
@@ -91,6 +91,16 @@
 			th:href="@{${entityURL} + '/enabled/true' + '?pageNum=' + ${currentPage}+ '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword='+${keyword} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}"
 			th:title="'Enable this ' + ${entityName}"></a>
 	</div>
+	
+	<div th:fragment="cod(enabled, entityName, entityURL)">
+		<a th:if="${enabled == true}" class="fa-sharp fa-solid fa-hand-holding-dollar fa-2x text-decoration-none icon-green"
+			th:href="@{${entityURL} + '/enabled/false' + '?pageNum=' + ${currentPage}+ '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword='+${keyword} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}"
+			th:title="'Disable this ' + ${entityName}"></a> <a th:if="${enabled == false}"
+			class="fa-sharp fa-solid fa-hand-holding-dollar fa-2x text-decoration-none icon-silver"
+			th:href="@{${entityURL} + '/enabled/true' + '?pageNum=' + ${currentPage}+ '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&keyword='+${keyword} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}"
+			th:title="'Enable this ' + ${entityName}"></a>
+	</div>
+	<i class="fa-sharp fa-solid fa-hand-holding-dollar"></i>
 
 	<a th:fragment="edit(entityName, editURL)" th:href="@{${editURL}}" class="pe-2 text-decoration-none"
 		th:title="'Edit this' + ${entityName}"><i class="fa fa-edit text-primary" aria-hidden="true"></i></a>

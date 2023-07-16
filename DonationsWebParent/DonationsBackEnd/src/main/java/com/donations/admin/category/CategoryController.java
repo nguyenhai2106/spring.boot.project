@@ -34,7 +34,7 @@ public class CategoryController {
 	}
 
 	@GetMapping("/categories/page/{pageNum}")
-	public String listByPage(@PathVariable(name = "pageNum") int pageNum, @Param("sortDir") String sortDir, Model model,
+	public String listByPage(@PathVariable(name = "pageNum") int pageNum, @RequestParam("sortDir") String sortDir, Model model,
 			@Param("keyword") String keyword) {
 		if (pageNum < 1) {
 			pageNum = 1;
@@ -136,7 +136,7 @@ public class CategoryController {
 	@GetMapping("categories/{id}/enabled/{status}")
 	public String updateUserEnabledStatus(@PathVariable(name = "id") Integer id,
 			@PathVariable(name = "status") boolean enabled, RedirectAttributes redirectAttributes,
-			@Param("pageNum") String pageNum, @Param("sortDir") String sortDir, @Param("keyword") String keyword)
+			@RequestParam("pageNum") String pageNum, @RequestParam("sortDir") String sortDir, @RequestParam("keyword") String keyword)
 			throws CategoryNotFoundException {
 		service.updateCategoryEnabledStatus(id, enabled);
 		String status = enabled ? "Enabled" : "Disabled";

@@ -95,8 +95,8 @@ public class ProductController {
 
 	@GetMapping("/products/{id}/enabled/{status}")
 	public String updateProductEnabledStatus(@PathVariable(name = "id") Integer id,
-			@PathVariable(name = "status") boolean enabled, @Param("sortField") String sortField,
-			@Param("sortDir") String sortDir, @Param("keyword") String keyword, RedirectAttributes redirectAttributes)
+			@PathVariable(name = "status") boolean enabled, @RequestParam("sortField") String sortField,
+			@RequestParam("sortDir") String sortDir, @RequestParam("keyword") String keyword, RedirectAttributes redirectAttributes)
 			throws ProductNotFoundException {
 		productService.updateProductEnabledStatus(id, enabled);
 		String status = enabled ? "Enabled" : "Disabled";
@@ -167,7 +167,7 @@ public class ProductController {
 	@GetMapping("/products/page/{pageNum}")
 	public String listByPage(
 			@PagingAndSortingParam(listName = "listProducts", moduleURL = "/products") PagingAndSortingHelper helper,
-			@PathVariable(name = "pageNum") int pageNum, Model model, @Param("categoryId") Integer categoryId) {
+			@PathVariable(name = "pageNum") int pageNum, Model model, @RequestParam("categoryId") Integer categoryId) {
 		productService.listByPage(pageNum, helper, categoryId);
 		List<Category> listCategories = categoryService.listCategoriesUsedInForm();
 		if (categoryId != null) {

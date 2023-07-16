@@ -124,8 +124,8 @@ public class UserController {
 
 	@GetMapping("users/{id}/enabled/{status}")
 	public String updateUserEnabledStatus(@PathVariable(name = "id") Integer id,
-			@PathVariable(name = "status") boolean enabled, @Param("pageNum") String pageNum,
-			@Param("sortField") String sortField, @Param("sortDir") String sortDir, @Param("keyword") String keyword,
+			@PathVariable(name = "status") boolean enabled, @RequestParam("pageNum") String pageNum,
+			@RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir, @RequestParam("keyword") String keyword,
 			RedirectAttributes redirectAttributes) throws UserNotFoundException {
 		service.updateUserEnabledStatus(id, enabled);
 		String status = enabled ? "Enabled" : "Disabled";

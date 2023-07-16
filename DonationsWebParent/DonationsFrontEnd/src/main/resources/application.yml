@@ -15,8 +15,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2012Dialect
         format_sql: true
-    show-sql: true
+    show-sql: false
   security:
+    spring:
     oauth2:
       client:
         registration:
@@ -32,4 +33,3 @@ spring:
             scope:
             - email
             - public_profile
-          

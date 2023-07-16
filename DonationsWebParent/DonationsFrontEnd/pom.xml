@@ -48,4 +48,9 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependency>
+		<groupId>org.springframework.social</groupId>
+		<artifactId>spring-social-twitter</artifactId>
+		<version>1.1.2.RELEASE</version>
+	</dependency>
 </project>

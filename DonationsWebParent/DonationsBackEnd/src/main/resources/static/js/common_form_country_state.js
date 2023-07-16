@@ -1,5 +1,5 @@
-var dropdownCountries;
-var dropdownStates;
+let dropdownCountries;
+let dropdownStates;
 
 $(document).ready(function() {
 	dropdownCountries = $("#country");

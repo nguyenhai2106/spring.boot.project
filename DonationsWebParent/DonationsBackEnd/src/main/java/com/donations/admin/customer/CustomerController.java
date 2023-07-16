@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donations.admin.customer.exporter.CustomerCsvExporter;
@@ -43,8 +44,8 @@ public class CustomerController {
 
 	@GetMapping("/customers/{id}/enabled/{status}")
 	public String updateCustomerEnabledStatus(@PathVariable("id") Integer id, @PathVariable("status") boolean enabled,
-			RedirectAttributes redirectAttributes, @Param("pageNum") String pageNum,
-			@Param("sortField") String sortField, @Param("sortDir") String sortDir, @Param("keyword") String keyword) {
+			RedirectAttributes redirectAttributes, @RequestParam("pageNum") String pageNum,
+			@RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir, @RequestParam("keyword") String keyword) {
 		customerService.updateCustomerEnabledStatus(id, enabled);
 		String status = enabled ? "enabled" : "disabled";
 		String message = "The Customer ID " + id + " has been " + status;
@@ -58,8 +59,8 @@ public class CustomerController {
 
 	@GetMapping("/customers/delete/{id}")
 	public String deleteCustomer(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes,
-			@Param("pageNum") String pageNum, @Param("sortField") String sortField, @Param("sortDir") String sortDir,
-			@Param("keyword") String keyword) {
+			@RequestParam("pageNum") String pageNum, @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
+			@RequestParam("keyword") String keyword) {
 		try {
 			customerService.delete(id);
 			redirectAttributes.addFlashAttribute("message", "The customer Id " + id + " has bean deleted successfully");

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head
+	th:replace="~{fragments :: page_head('Shipping Rates - Donations Admin', 'none')}" />
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:replace="~{navigation :: navigationMenu}"></div>
+		<div class="container mt-2">
+			<div class="my-2">
+				<h2 align="center">Manage Shipping Rate</h2>
+				<div class="d-none d-sm-block text-center">
+					<a class="btn btn-primary mb-2" th:href="@{/shipping_rates/new}">Create
+						New Shipping Rate</a> <a class="btn btn-secondary mb-2"
+						th:href="@{/shipping_rates/export/csv}">Export To CSV</a>
+				</div>
+				<div class="d-md-none d-lg-none text-center">
+					<a class="mb-2 fas fa-folder-plus icon-dark fa-2x me-3"
+						th:href="@{/shipping_rates/new}"></a> <a
+						class="mb-2 fas fa-file-csv fa-2x icon-dark me-3"
+						th:href="@{/shipping_rates/export/csv}"></a>
+				</div>
+			</div>
+			<div th:if="${message != null}"
+				class="alert alert-success alert-dismissible fade show col-8 mx-auto text-center"
+				role="alert">
+				[[${message}]]
+				<button type="button" class="btn-close" data-bs-dismiss="alert"
+					aria-label="Close"></button>
+			</div>
+		</div>
+
+		<div th:replace="~{fragments :: search_form()}"></div>		
+		
+		<div class="container d-none d-sm-block">
+			<table
+				class="table table-bordered table-striped table-hover table-responsive-xl">
+				<thead class="table-dark">
+					<tr>
+						<th class="text-center align-middle">ID</th>
+						<th th:replace="~{fragments :: column_link('country', 'Country')}"></th>
+						<th th:replace="~{fragments :: column_link('state', 'State')}"></th>
+						<th class="text-center align-middle">Shipping Rate</th>
+						<th class="text-center align-middle">Shipping Day</th>
+						<th th:replace="~{fragments :: column_link('codSupported', 'COD Supported')}"></th>
+						<th class="text-center">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="sr : ${listShippingRates}">
+						<td class="text-center align-middle">[[${sr.id}]]</td>
+						<td class="align-middle text-center">[[${sr.country.name}]]</td>
+						<td class="align-middle text-center">[[${sr.state}]]</td>
+						<td class="align-middle text-center">[[${sr.rate}]]</td>
+						<td class="align-middle text-center">[[${sr.days}]]</td>
+						<td class="text-center align-middle"><a
+							th:replace="~{fragments :: cod(${sr.codSupported}, 'Shipping Rate', '/shipping_rates/cod/' + ${sr.id})}"></a>
+						</td>	
+						<td class="text-center align-middle ">
+							<a
+							th:href="@{'/shipping_rates/edit/' + ${sr.id}}"
+							class="pe-2 text-decoration-none" title="Edit this shipping rate"><i
+								class="fa fa-edit text-primary" aria-hidden="true"></i></a> 
+							
+							<a
+							th:href="@{'/shipping_rates/delete/' + ${sr.id}}"
+							class="text-danger text-decoration-none link-delete"
+							title="Delete this shipping rate" th:brandId="${sr.id}"><i
+								class="fa fa-trash" aria-hidden="true"></i></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		
+		<div class="modal fade text-center" id="confirmModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Delete Confirmation</h4>
+						<button type="button" class="close" data-bs-dismiss="modal"
+							aria-label="Close">&times;</button>
+					</div>
+
+					<div class="modal-body">
+						<span id="confirmText"></span>
+					</div>
+
+					<div class="modal-footer">
+						<a class="btn btn-primary text-decoration-none" href=""
+							id="yesButton">Yes</a>
+						<button type="button" class="btn btn-danger"
+							data-bs-dismiss="modal">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div th:replace="~{fragments :: pagination('shipping_rates')}"></div>
+		<div th:replace="~{fragments :: footer}"></div>
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(
+				function() {
+					$(".link-delete")
+							.on(
+									"click",
+									function(e) {
+										e.preventDefault();
+										link = $(this);
+										srId = link.attr("brandId");
+										$("#yesButton").attr("href",
+												link.attr("href"));
+										$("#confirmText").text(
+												"Are you sure want to delete this Shopping rate ID "
+														+ srId + "?");
+										$("#confirmModal").modal("show");
+									});
+				});
+		function clearFilter() {
+			window.location = "[[@{/shipping_rates}]]"
+		}
+	</script>
+</body>
+</html>

@@ -110,8 +110,20 @@
 							</li>
 						</th:block>
 						<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
-							<li class="nav-item"><a class="nav-link"
-								th:href="@{/shipping}">Shipping</a></li>
+							<li class="nav-item">
+								<div class="btn-group">
+									<div class="dropdown">
+										<a class="btn dropdown-toggle" th:href="@{/shipping_rates}"
+											role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+											aria-expanded="false" style="border: none; margin-top: 2px;">Shipping Rates</a>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+											<li><a class="dropdown-item" th:href="@{/shipping_rates/new}">Create New Shipping Rate</a></li>
+											<li><a class="dropdown-item" th:href="@{/shipping_rates}">View
+													All Shipping Rate</a></li>
+										</ul>
+									</div>
+								</div>
+							</li>
 						</th:block>
 
 
