@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.donations.common.entity.Setting;
+import com.donations.common.entity.setting.Setting;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

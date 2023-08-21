@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<div class="col-6 col-sm-4 col-lg-3 mb-4">
+			<div class="card text-center">
+				<div class="card-body">
+					<a href="#" class="linkProduct" th:pid="${product.id}"> <img
+						th:src="@{${product.mainImagePath}}" width="250" alt=""
+						class="img-fluid imageProduct" /></a>
+				</div>
+				<div class="row  p-1 ps-2" style="height: 58px; overflow: hidden;">
+					<a href=""><b class="text-center"
+						th:id="'pname' + ${product.id}">[[${product.name}]]</b></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -78,7 +78,7 @@ public class ShippingRateRepositoryTest {
 
 	@Test
 	public void testFindByCountryAndState() {
-		ShippingRate rate = repository.findByCountryAndState(242, "Hồ Chí Minh").get(0);
+		ShippingRate rate = repository.findByCountryAndState(242, "Hồ Chí Minh");
 		assertThat(rate).isNotNull();
 		System.out.println(rate);
 	}

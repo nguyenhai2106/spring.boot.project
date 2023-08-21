@@ -53,7 +53,6 @@ public class CustomerController {
 		customerService.registerCustomer(customer);
 		sendVerificationEmail(request, customer);
 		model.addAttribute("pageTitle", "Registration Succeeded");
-
 		return "/register/register_success";
 	}
 
@@ -61,6 +60,7 @@ public class CustomerController {
 			throws UnsupportedEncodingException, MessagingException {
 		EmailSettingBag emailSettingBag = settingService.getEmailSettings();
 		JavaMailSenderImpl mailSender = Utility.prepareMailSender(emailSettingBag);
+		mailSender.setDefaultEncoding("utf-8");
 
 		String toAddress = customer.getEmail();
 		String emailSubject = emailSettingBag.getCustomerVerifySubject();
@@ -105,7 +105,17 @@ public class CustomerController {
 		updateNameForAuthenticatedCustomer(customer, request);
 		customerService.update(customer);
 		redirectAttributes.addFlashAttribute("message", "Your account details have been updated.");
-		return "redirect:/account_details";
+
+		String redirectOption = request.getParameter("redirect");
+		String redirectURL = "redirect:/account_details";
+		if ("shipping_addresses".equals(redirectOption)) {
+			redirectURL = "redirect:/shipping_addresses";
+		} else if ("cart".equals(redirectOption)) {
+			redirectURL = "redirect:/cart";
+		} else if ("checkout".equals(redirectOption)) {
+			redirectURL = "redirect:/shipping_addresses?redirect=checkout";
+		}
+		return redirectURL;
 	}
 
 	private void updateNameForAuthenticatedCustomer(Customer customer, HttpServletRequest request) {

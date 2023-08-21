@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.donations.category.CategoryService;
 import com.donations.common.entity.Category;
-import com.donations.common.entity.Product;
+import com.donations.common.entity.product.Product;
 import com.donations.common.exception.CategoryNotFoundException;
 import com.donations.common.exception.ProductNotFoundException;
 

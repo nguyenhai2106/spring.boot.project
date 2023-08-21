@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.donations.common.entity.CartItem;
 import com.donations.common.entity.Customer;
-import com.donations.common.entity.Product;
+import com.donations.common.entity.product.Product;
 import com.donations.product.ProductRepository;
 
 @Service
@@ -52,8 +52,12 @@ public class ShoppingCartService {
 		float subTotal = product.getDiscountPrice() * quantity;
 		return subTotal;
 	}
-	
+
 	public void removeCartItem(Integer productId, Customer customer) {
 		cartItemRepository.deleteByCustomerAndProduct(customer.getId(), productId);
+	}
+
+	public void deleteByCustomer(Customer customer) {
+		cartItemRepository.deleteByCustomer(customer.getId());
 	}
 }

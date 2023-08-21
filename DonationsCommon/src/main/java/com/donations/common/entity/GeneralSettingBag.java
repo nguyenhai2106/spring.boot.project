@@ -2,6 +2,9 @@ package com.donations.common.entity;
 
 import java.util.List;
 
+import com.donations.common.entity.setting.Setting;
+import com.donations.common.entity.setting.SettingBag;
+
 public class GeneralSettingBag extends SettingBag {
 
 	public GeneralSettingBag(List<Setting> listSettings) {

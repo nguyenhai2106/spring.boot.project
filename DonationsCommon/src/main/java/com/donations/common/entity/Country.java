@@ -7,32 +7,24 @@ import org.hibernate.annotations.Nationalized;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
- 
+
 @Entity
 @Table(name = "countries")
-public class Country {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
+public class Country extends IdBaseEntity {
 	@Nationalized
 	@Column(nullable = false, unique = true, length = 128)
 	private String name;
 
-	
 	@Column(nullable = false, unique = true, length = 8)
 	private String code;
 
 	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
 	private Set<State> states;
 
-	public Country() { 
-	} 
+	public Country() {
+	}
 
 	public Country(Integer id) {
 		this.id = id;
@@ -48,17 +40,9 @@ public class Country {
 		this.name = name;
 		this.code = code;
 	}
-	
+
 	public Country(String name) {
 		this.name = name;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getName() {

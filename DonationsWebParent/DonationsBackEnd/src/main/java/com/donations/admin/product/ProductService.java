@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.donations.admin.paging.PagingAndSortingHelper;
-import com.donations.common.entity.Product;
 import com.donations.common.entity.User;
+import com.donations.common.entity.product.Product;
 import com.donations.common.exception.ProductNotFoundException;
 
 @Service
@@ -80,6 +80,7 @@ public class ProductService {
 
 	public Product getById(Integer id) throws ProductNotFoundException {
 		try {
+			System.out.println("DEBUGS: " + id);
 			return repository.findById(id).get();
 		} catch (NoSuchElementException e) {
 			throw new ProductNotFoundException("Could not find any product with ID " + id);
@@ -107,6 +108,13 @@ public class ProductService {
 				page = repository.findAll(pageable);
 			}
 		}
+		helper.updateModelAttributes(pageNum, page);
+	}
+
+	public void searchProduct(int pageNum, PagingAndSortingHelper helper) {
+		Pageable pageable = helper.createPageable(PRODUCTS_PER_PAGE, pageNum);
+		String keyword = helper.getKeyword();
+		Page<Product> page = repository.searchProductsByName(keyword, pageable);
 		helper.updateModelAttributes(pageNum, page);
 	}
 }

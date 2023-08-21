@@ -1,4 +1,4 @@
-package com.donations.common.entity;
+package com.donations.common.entity.setting;
 
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ public class Setting {
 	private String key;
 
 	@Nationalized
-	@Column(nullable = false, length = 1024)
+	@Column(nullable = false, length = 2048)
 	private String value;
 
 	@Enumerated(EnumType.STRING)
@@ -30,14 +30,10 @@ public class Setting {
 	public Setting() {
 
 	}
-	
-	
 
 	public Setting(String key) {
 		this.key = key;
 	}
-
-
 
 	public Setting(String key, String value, SettingCategory category) {
 		this.key = key;
@@ -89,13 +85,9 @@ public class Setting {
 		return Objects.equals(key, other.key);
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "Setting [key= " + key + ", value= " + value + "]";
 	}
-	
-	
 
 }

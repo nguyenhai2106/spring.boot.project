@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: page_head('Checkout', 'none')}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="~{navigation :: header_menu}"></div>
+		<section class="h-100 my-5 rounded" style="background-color: #eee;">
+			<div class="container h-100 py-5">
+				<div class="d-flex justify-content-center align-items-center mb-4">
+					<h3 class="fw-normal mb-0 fw-bold text-primary">Checkout</h3>
+				</div>
+				<div class="row d-flex justify-content-center h-100">
+					<div class="col-12 col-md-6">
+						<div class="card">
+							<div class="card-header">
+								<div class="d-flex align-items-center justify-content-between">
+									<span><b class="fs-5 text-primary">Shipping
+											Information</b></span> <span><a
+										th:href="@{/shipping_addresses(redirect=checkout)}"
+										class="text-primary">[Ship to another address]</a></span>
+								</div>
+							</div>
+							<div class="card-body p-1">
+								<th:block th:if="${defaultAddress}">
+									<div class="card-body p-2 px-3">
+										<p class="card-title mb-1 fw-bold">[[${defaultAddress.fullName}]]
+											([[${defaultAddress.phoneNumber}]])</p>
+										<p class="card-text d-flex flex-column">
+											<span><b>Address Line 1: </b>[[${defaultAddress.addressLine1}]]</span>
+											<span><b>Address Line 2: </b>[[${defaultAddress.addressLine2}]],
+												[[${defaultAddress.city}]], [[${defaultAddress.state}]],
+												[[${defaultAddress.postalCode}]],
+												[[${defaultAddress.country.name}]]</span> <span><b>Days
+													to delivery: </b>[[${checkoutInfo.deliveryDays}]]</span> <span><b>Expected
+													delivery date: </b>[[${checkoutInfo.deliveryDate}]]</span>
+										</p>
+									</div>
+								</th:block>
+								<th:block th:unless="${defaultAddress}">
+									<div class="card-body p-2 px-3">
+										<p class="card-title mb-1 fw-bold">[[${customer.fullName}]]
+											([[${customer.phoneNumber}]])</p>
+										<p class="card-text">
+											<span><b>Address Line 1: </b>[[${customer.addressLine1}]]</span><br>
+											<span><b>Address Line 1: </b>[[${customer.addressLine2}]],
+												[[${customer.city}]], [[${customer.state}]],
+												[[${customer.postalCode}]], [[${customer.country.name}]]</span>
+										</p>
+									</div>
+								</th:block>
+							</div>
+						</div>
+						<!-- Payment Methos -->
+						<div class="card mt-3">
+							<div class="card-header">
+								<div class="d-flex align-items-center justify-content-between">
+									<div class="d-flex align-items-center">
+										<span><b class="fs-5 text-primary">Payment Method</b></span>
+									</div>
+								</div>
+							</div>
+							<div class="card-body pb-1">
+								<form th:action="@{/place_order}" method="post"
+									class="d-flex align-items-center">
+									<div th:if="${checkoutInfo.codSupported}" class="form-check">
+										<input class="form-check-input" type="radio" value="COD"
+											name="paymentMethod" id="radioCOD"> <label
+											class="form-check-label" for="radioCOD"> Cash On
+											Delivery (COD)</label>
+									</div>
+									<button type="submit" class="btn btn-primary ms-2 d-none"
+										id="codSubmitButton">Place Order With COD</button>
+								</form>
+								<div class="mt-2" id="paypal-button-container"></div>
+								<form th:action="@{/process_paypal_order}" method="POST"
+									id="paypalForm">
+									<input type="hidden" name="orderId" id="orderId" /> <input
+										type="hidden" name="paymentMethod" value="PAYPAL" />
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 mt-3 mt-sm-0">
+						<div class="card">
+							<div class="card-header">
+								<div class="d-flex align-items-center justify-content-between">
+									<div class="d-flex align-items-center">
+										<b class="fs-5 text-primary">Order Summary</b>
+									</div>
+								</div>
+							</div>
+							<div class="card-body pt-0">
+								<div class="text-center text-secondary mb-0 pt-3">
+									<h5 id="sectionEmptyCartMessage"
+										th:class="${#lists.isEmpty(listCartItems) ? 'mb-0' : ' d-none'}">
+										You have not chosen any products yet</h5>
+								</div>
+								<th:block th:each="cartItem, status: ${listCartItems}">
+									<div class="card rounded mt-3" th:id="'row' + ${status.count}"
+										th:with="product = ${cartItem.product}">
+										<div class="card-body p-4">
+											<div
+												class="row d-flex justify-content-between align-items-center">
+												<div class="col-md-6 align-items-center">
+													<p class="fw-bold mb-0">
+														<a th:href="@{${'/p/'+cartItem.product.alias}}"
+															target="_blank">[[${cartItem.product.shortName}]]</a>
+													</p>
+												</div>
+												<div class="col-md-6 mt-2 mt-sm-0">
+													<p class="mb-0 text-secondatry">
+														<b>Quantity: </b>[[${cartItem.quantity}]]
+													</p>
+													<p class="mb-0 text-secondatry">
+														<b>Shipping Cost: </b><span
+															th:replace="~{fragments :: format_currency(${cartItem.shippingCost})}"></span>
+													</p>
+													<p class="mb-0 text-secondatry">
+														<b>Sub Total: </b><span
+															th:replace="~{fragments :: format_currency(${cartItem.subtotal})}"></span>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</th:block>
+							</div>
+							<div class="card-footer">
+								<p class="mb-0 text-secondatry fs-5">
+									<b>Product Total: </b> <span
+										th:replace="~{fragments :: format_currency(${checkoutInfo.productTotal})}"></span>
+								</p>
+								<p class="mb-0 text-secondatry fs-5">
+									<b>Shipping Total: </b> <span
+										th:replace="~{fragments :: format_currency(${checkoutInfo.shippingCostTotal})}"></span>
+								</p>
+								<p class="mb-0 text-secondatry fs-5">
+									<b>Payment Total: </b> <span
+										th:replace="~{fragments :: format_currency(${checkoutInfo.paymentTotal})}"></span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div th:replace="~{modal_fragments :: modal_dialog}"></div>
+		<div th:replace="~{navigation :: footer_menu}"></div>
+	</div>
+	<script type="text/javascript"
+		th:src="@{https://www.paypal.com/sdk/js(client-id=${paypalClientId},currency=${currencyCode})}">
+	</script>
+	<script type="text/javascript">
+		let contextPath = "[[@{/}]]"
+		let csrfHeaderName = "[[${_csrf.headerName}]]";
+		let csrfValue = "[[${_csrf.token}]]";
+		let decimalDigits = [[${DECIMAL_DIGITS}]]
+		let decimalPointType = "[[${DECIMAL_POINT_TYPE}]]"
+		let thousandsPointType = "[[${THOUSANDS_POINT_TYPE}]]"
+		
+		$(document).ready(function() {
+			$("#radioCOD").on("click", function() {
+				$("#codSubmitButton").removeClass("d-none");
+			})
+		})
+		
+		function validateOrder(orderId) {
+			$("#orderId").val(orderId);
+			$("#paypalForm").submit();
+		}
+		
+		paypal.Buttons({
+			enableStandardCardFields: true,
+			createOrder: function(data, actions) {
+				return actions.order.create({
+					intent: 'CAPTURE',
+					payer: {
+						name: {
+							given_name: "[[${customer.firstName}]]",
+							surname: "[[${customer.lastName}]]",
+						},
+						address: {
+							address_line_1: "[[${customer.addressLine1}]]",
+							address_line_2: "[[${customer.addressLine2}]]",
+							admin_area_1: "[[${customer.state}]]",
+							admin_area_2: "[[${customer.city}]]",
+							postal_code: "[[${customer.postalCode}]]",
+							country_code: "[[${customer.country.code}]]"
+						},
+						email_address: "[[${customer.email}]]",
+						phone: {
+							phone_type: "MOBILE",
+							phone_number: {
+								national_number: "[[${customer.phoneNumber}]]"
+							}
+						}	
+					},
+					
+					purchase_units: [{
+							amount: {
+								value: "[[${checkoutInfo.paymentTotalForPaypal}]]",
+								currency_code: "[[${currencyCode}]]"
+							}
+					}],
+					
+					application_context: {
+						shipping_preference: "NO_SHIPPING"
+					}
+					
+				})
+			},
+			onApprove: function(data, actions) {
+				return actions.order.capture().then(function(details) {
+					orderId = details.id;
+					console.log(orderId);
+					validateOrder(orderId);
+				})
+			},
+			onCancel: function(data) {
+				showWarningModal("Payment Canceled: You have cancelled the payment process.");
+			},
+			onError: function(err) {
+				console.log(err);
+				showErrorModal("Payment Error: Something went wrong with the payment processing. Please verify your information and try again.");
+			}
+		}).render("#paypal-button-container");
+		
+	</script>
+	<script type="text/javascript" th:src="@{/js/jquery.number.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/common_form.js}"></script>
+	<script type="text/javascript" th:src="@{/js/shopping_cart.js}"></script>
+</body>
+</html>

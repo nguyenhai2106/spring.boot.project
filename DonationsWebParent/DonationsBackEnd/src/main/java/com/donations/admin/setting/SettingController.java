@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.donations.admin.FileUploadUtil;
 import com.donations.common.entity.Currency;
 import com.donations.common.entity.GeneralSettingBag;
-import com.donations.common.entity.Setting;
+import com.donations.common.entity.setting.Setting;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -67,6 +67,15 @@ public class SettingController {
 		updateSettingValuesFromForm(request, mailTemplateSettings);
 		redirectAttributes.addFlashAttribute("message", "Mail template settings have been saved");
 		return "redirect:/settings#mailTemplates";
+	}
+	
+	@PostMapping("/settings/save_payment")
+	public String savePaymentSettings(HttpServletRequest request, RedirectAttributes redirectAttributes)
+			throws IOException {
+		List<Setting> paymentSettings = settingService.getPaymentSettings();
+		updateSettingValuesFromForm(request, paymentSettings);
+		redirectAttributes.addFlashAttribute("message", "Payment settings have been saved");
+		return "redirect:/settings#payment";
 	}
 
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag settingBag) throws IOException {

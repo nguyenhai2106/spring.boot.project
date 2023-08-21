@@ -1,45 +1,29 @@
 package com.donations.common.entity;
 
-import java.util.Objects;
-
 import org.hibernate.annotations.Nationalized;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "shipping_rates")
-public class ShippingRate {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+public class ShippingRate extends IdBaseEntity {
 	private float rate;
 	private int days;
 
 	@ManyToOne
 	@JoinColumn(name = "country_id")
 	private Country country;
- 
+
 	@Column(nullable = false, length = 64)
 	@Nationalized
 	private String state;
 
 	@Column(name = "cod_supported")
 	private boolean codSupported;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public float getRate() {
 		return rate;

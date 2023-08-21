@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.donations.common.entity.GeneralSettingBag;
-import com.donations.common.entity.Setting;
-import com.donations.common.entity.SettingCategory;
+import com.donations.common.entity.setting.Setting;
+import com.donations.common.entity.setting.SettingCategory;
 
 @Service
 public class SettingService {
@@ -41,5 +41,13 @@ public class SettingService {
 
 	public List<Setting> getMailTemplateSettings() {
 		return repository.findByCategory(SettingCategory.MAIL_TEMPLATES);
+	}
+	
+	public List<Setting> getPaymentSettings() {
+		return repository.findByCategory(SettingCategory.PAYMENT);
+	}
+	
+	public List<Setting> getCurrencySettings() {
+		return repository.findByCategory(SettingCategory.CURRENCY);
 	}
 }

@@ -1,4 +1,4 @@
-package com.donations.common.entity;
+package com.donations.common.entity.product;
 
 import java.text.NumberFormat;
 import java.util.Date;
@@ -9,12 +9,13 @@ import java.util.Set;
 
 import org.hibernate.annotations.Nationalized;
 
+import com.donations.common.entity.Brand;
+import com.donations.common.entity.Category;
+import com.donations.common.entity.IdBaseEntity;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -23,10 +24,7 @@ import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "products")
-public class Product {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+public class Product extends IdBaseEntity {
 
 	@Nationalized
 	@Column(unique = true, length = 255, nullable = false)
@@ -36,11 +34,11 @@ public class Product {
 
 	}
 
-	public Integer getId() {
-		return id;
+	public Product(String productName) {
+		this.name = productName;
 	}
-
-	public void setId(Integer id) {
+	
+	public Product(Integer id ) {
 		this.id = id;
 	}
 
@@ -308,7 +306,7 @@ public class Product {
 	public String getShortName() {
 		if (name.length() > 80) {
 			return name.substring(0, 80).concat(" . . .");
-		} 
+		}
 		return name;
 	}
 
@@ -321,11 +319,16 @@ public class Product {
 		}
 		return (this.price);
 	}
-	
+
 	@Transient
 	public String getPriceVND() {
 		Locale currentLocale = new Locale("vi", "VN");
 		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(currentLocale);
 		return currencyFormatter.format(this.price);
+	}
+
+	@Transient
+	public float getDIMWeight(int dimDivisor) {
+		return length * width * height / dimDivisor;
 	}
 }

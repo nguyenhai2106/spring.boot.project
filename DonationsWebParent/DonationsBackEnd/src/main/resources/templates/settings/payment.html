@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<form th:action="@{/settings/save_payment}" method="post"
+			enctype="multipart/form-data">
+			<div class="input-group mb-4 row">
+				<label class="col-sm-3 col-form-label">PayPal API Base URL</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" name="PAYPAL_API_BASE_URL"
+						th:value="${PAYPAL_API_BASE_URL}" required="required" />
+				</div>
+			</div>
+
+			<div class="input-group mb-4 row">
+				<label class="col-sm-3 col-form-label">Paypal Client ID</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" name="PAYPAL_API_CLIENT_ID"
+						th:value="${PAYPAL_API_CLIENT_ID}" required="required" />
+				</div>
+			</div>
+
+			<div class="input-group mb-4 row">
+				<label class="col-sm-3 col-form-label">PayPal Client Secret</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" name="PAYPAL_API_CLIENT_SECRET"
+						th:value="${PAYPAL_API_CLIENT_SECRET}" required="required" />
+				</div>
+			</div>
+			<div class="my-4 text-center">
+				<input type="submit" value="Save" class="btn btn-primary me-2" /> <input
+					type="button" value="Cancel" class="btn btn-secondary"
+					id="buttonCancelServerMail" />
+			</div>
+		</form>
+	</div>
+</body>
+</html>

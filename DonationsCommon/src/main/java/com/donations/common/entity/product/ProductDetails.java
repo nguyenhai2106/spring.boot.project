@@ -1,23 +1,18 @@
-package com.donations.common.entity;
+package com.donations.common.entity.product;
 
 import org.hibernate.annotations.Nationalized;
 
+import com.donations.common.entity.IdBaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "product_details")
-public class ProductDetails {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
+public class ProductDetails extends IdBaseEntity {
 	@Nationalized
 	@Column(nullable = false, length = 512)
 	private String name;
@@ -69,14 +64,6 @@ public class ProductDetails {
 
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 }

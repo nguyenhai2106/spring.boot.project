@@ -38,7 +38,7 @@ public class WebSecurityConfig {
 
 	@Bean
 	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests().requestMatchers("/account_details", "/update_account_details", "/cart")
+		http.authorizeHttpRequests().requestMatchers("/account_details", "/update_account_details", "/cart", "/shipping_addresses/**", "/checkout", "/place_order", "/process_paypal_order")
 				.authenticated().anyRequest().permitAll().and()
 				.formLogin(login -> login.loginPage("/login").usernameParameter("email")
 						.successHandler(databaseLoginSuccessHandler).permitAll())

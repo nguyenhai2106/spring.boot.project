@@ -21,17 +21,13 @@ import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "users")
-public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
+public class User extends IdBaseEntity{
 	@Column(length = 128, nullable = false, unique = true)
 	private String email;
 
 	@Column(length = 64, nullable = false)
 	private String password;
-	
+
 	@Nationalized
 	@Column(name = "first_name", length = 64, nullable = false)
 	private String firstName;
@@ -48,14 +44,6 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getEmail() {
 		return email;
@@ -140,20 +128,20 @@ public class User {
 		}
 		return "/user-photos/" + this.id + "/" + this.photos;
 	}
-	
+
 	@Transient
 	public String getFullName() {
 		return firstName + " " + lastName;
 	}
-	
+
 	public boolean hasRole(String name) {
 		Iterator<Role> iterator = roles.iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Role role = iterator.next();
 			if (role.getName().equals(name)) {
 				return true;
 			}
 		}
-		return false;		
+		return false;
 	}
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: page_head('Order Confirmation', 'none')}" />
+<body>
+	<div class="container-fluid">
+		<div th:replace="~{navigation :: header_menu}"></div>
+		<div class="text-center mt-3">
+			<h3>Order Confirmation</h3>
+			<h4>Your order has been placed successfully!</h4>
+			<p>Thank you for shopping with us. We have received your order and will process it shortly.</p>
+			<p>An email confirmation has been sent to your registered email address.</p>
+			<p>You can track your order status by logging into your account.</p>
+			<p>If you have any questions or need further assistance, please feel free to contact our customer support team.</p>
+			<p>
+				<a th:href="@{/account/order_manage}">Go to My Account</a>
+			</p>
+		</div>
+		<div th:replace="~{navigation :: footer_menu}"></div>
+	</div>
+</body>
+</html>

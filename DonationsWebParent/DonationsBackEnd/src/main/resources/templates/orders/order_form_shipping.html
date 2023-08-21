@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<div class="rounded p-4 pe-0">
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Deliver Days</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{deliveryDays}" />
+				</div>
+			</div>
+
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Expected Delivery
+					Date</label>
+				<div class="col-sm-9">
+					<input type="date" class="form-control"
+						th:field="*{deliveryDateOnForm}" required="required" />
+				</div>
+			</div>
+
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">First Name</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{firstName}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Last Name</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{lastName}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Phone Number</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control"
+						th:field="${order.phoneNumber}" required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Address Line 1</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{addressLine1}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Address Line 2</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{addressLine2}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">City</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{city}"
+						required="required" />
+				</div>
+			</div>
+
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">Country</label>
+				<div class="col-sm-9">
+					<input type="hidden" name="countryName" id="countryName"
+						th:value="${order.country}" required="required" /> <select
+						class="form-select" id="country">
+						<option th:each="countryOption : ${countryList}"
+							th:value="${countryOption.id}"
+							th:selected="${countryOption.name == order.country}">[[${countryOption.name}]]</option>
+					</select>
+				</div>
+			</div>
+
+
+			<div class="input-group mb-3 row">
+				<label class="col-sm-3 col-form-label">State</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{state}"
+						list="states" required="required" />
+					<datalist id="states">
+
+					</datalist>
+				</div>
+			</div>
+			<div class="input-group row">
+				<label class="col-sm-3 col-form-label">Postal Code</label>
+				<div class="col-sm-9">
+					<input type="text" class="form-control" th:field="*{postalCode}"
+						required="required" />
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -25,7 +25,8 @@
 		<form th:action="@{/update_account_details}" method="post"
 			style="max-width: 800px; margin: 0 auto" th:object="${customer}"
 			enctype="multipart/form-data">
-			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:field="*{id}" /> <input type="hidden"
+				name="redirect" th:value=${param.redirect} />
 			<div class="border border-primary rounded p-4 pe-0">
 				<div class="input-group mb-3 row">
 					<label class="col-sm-3 col-form-label">Authentication Type:</label>
@@ -134,7 +135,7 @@
 					<label class="col-sm-3 col-form-label">Postal Code</label>
 					<div class="col-sm-9">
 						<input type="text" class="form-control" th:field="*{postalCode}"
-							required="required" maxlength="128" minlength="6" />
+							required="required" maxlength="128" minlength="4" />
 					</div>
 				</div>
 				<div class="mt-2 text-center">
@@ -152,35 +153,38 @@
 			crossorigin="anonymous"></script>
 
 		<script type="text/javascript">
-        contextPath = "[[@{/}]]";
-        $("#conpasscheck").hide();
-        $("#messageAlert").fadeOut(2000);
-        function checkEmailUnique(form) {
-          let url = "[[@{/customers/check_email}]]";
-          let customerEmail = $("#email").val();
-          let customerId = $("#id").val();
-          let csrfValue = $("input[name='_csrf']").val();
-          let params = {
-            id: customerId,
-            email: customerEmail,
-            _csrf: csrfValue,
-          };
-          $.post(url, params, function (response) {
-            if (response == "OK") {
-              form.submit();
-            } else if (response == "Duplicated") {
-              showWarningModal(
-                "There is another customer having the email " + customerEmail
-              );
-            } else {
-              showErrorModal("Unknown response from server");
-            }
-          }).fail(function () {
-            showErrorModal("Could not connect to server");
-          });
-          return false;
-        }
-      </script>
+			contextPath = "[[@{/}]]";
+			$("#conpasscheck").hide();
+			$("#messageAlert").fadeOut(2000);
+			function checkEmailUnique(form) {
+				let url = "[[@{/customers/check_email}]]";
+				let customerEmail = $("#email").val();
+				let customerId = $("#id").val();
+				let csrfValue = $("input[name='_csrf']").val();
+				let params = {
+					id : customerId,
+					email : customerEmail,
+					_csrf : csrfValue,
+				};
+				$
+						.post(
+								url,
+								params,
+								function(response) {
+									if (response == "OK") {
+										form.submit();
+									} else if (response == "Duplicated") {
+										showWarningModal("There is another customer having the email "
+												+ customerEmail);
+									} else {
+										showErrorModal("Unknown response from server");
+									}
+								}).fail(function() {
+							showErrorModal("Could not connect to server");
+						});
+				return false;
+			}
+		</script>
 		<script type="text/javascript" th:src="@{/js/common_form.js}"></script>
 		<script type="text/javascript" th:src="@{/js/common_customer_form.js}"></script>
 	</div>

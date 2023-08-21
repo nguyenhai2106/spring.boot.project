@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.donations.common.entity.Setting;
-import com.donations.common.entity.SettingBag;
+import com.donations.common.entity.setting.Setting;
+import com.donations.common.entity.setting.SettingBag;
 
 public class EmailSettingBag extends SettingBag {
 
@@ -28,6 +28,8 @@ public class EmailSettingBag extends SettingBag {
 		emailSettings.put("MAIL_SENDER_NAME", getValue("MAIL_SENDER_NAME"));
 		emailSettings.put("CUSTOMER_VERIFY_SUBJECT", getValue("CUSTOMER_VERIFY_SUBJECT"));
 		emailSettings.put("CUSTOMER_VERIFY_CONTENT", getValue("CUSTOMER_VERIFY_CONTENT"));
+		emailSettings.put("ORDER_CONFIRMATION_SUBJECT", getValue("ORDER_CONFIRMATION_SUBJECT"));
+		emailSettings.put("ORDER_CONFIRMATION_CONTENT", getValue("ORDER_CONFIRMATION_CONTENT"));
 
 	}
 
@@ -70,4 +72,13 @@ public class EmailSettingBag extends SettingBag {
 	public String getCustomerVerifyContent() {
 		return emailSettings.get("CUSTOMER_VERIFY_CONTENT");
 	}
+
+	public String getOrderConfirmationSubject() {
+		return emailSettings.get("ORDER_CONFIRMATION_SUBJECT");
+	}
+
+	public String getOrderConfirmationContent() {
+		return emailSettings.get("ORDER_CONFIRMATION_CONTENT");
+	}
+
 }

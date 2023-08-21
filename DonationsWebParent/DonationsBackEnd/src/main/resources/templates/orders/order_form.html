@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head
+	th:replace="~{fragments :: page_head('Orders - Donations Admin', 'none')}" />
+</head>
+<body>
+	<div th:replace="~{navigation :: navigationMenu}"></div>
+	<div class="container-fluid">
+		<div align="center" class="my-4">
+			<h3>Manage Orders | [[${pageTitle}]]</h3>
+		</div>
+		<div class="container">
+			<form th:action="@{/orders/save}" method="post" th:object="${order}"
+				onsubmit="return processFormBeforeSubmit()">
+				<input type="hidden" th:field="*{id}" />
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item" role="presentation"><a
+						class="nav-link active" data-bs-toggle="tab" href="#overview"
+						data-bs-target="#overview" type="button" role="tab">Overview</a></li>
+					<li class="nav-item" role="presentation"><a class="nav-link"
+						data-bs-toggle="tab" href="#products" data-bs-target="#products"
+						type="button" role="tab">Products</a></li>
+					<li class="nav-item" role="presentation"><a class="nav-link"
+						data-bs-toggle="tab" href="#shipping" data-bs-target="#shipping"
+						type="button" role="tab">Shipping</a></li>
+					<li class="nav-item" role="presentation"><a class="nav-link"
+						data-bs-toggle="tab" href="#track" data-bs-target="#track"
+						type="button" role="tab">Track</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane p-3 active" id="overview" role="tabpanel">
+						<div th:replace="~{orders/order_form_overview :: content}"></div>
+					</div>
+
+					<!-- Products -->
+					<div class="tab-pane p-4 pb-0" id="products" role="tabpanel">
+						<div th:replace="~{orders/order_form_products :: content}"></div>
+					</div>
+					<!-- Shipping -->
+					<div class="tab-pane px-2 pb-0" id="shipping" role="tabpanel">
+						<div th:replace="~{orders/order_form_shipping :: content}"></div>
+					</div>
+
+					<!-- Track -->
+					<div class="tab-pane px-2 pb-0 pt-4" id="track" role="tabpanel">
+						<div th:replace="~{orders/order_form_track :: content}"></div>
+					</div>
+
+				</div>
+				<div class="my-4 text-center">
+					<input type="submit" value="Save" class="btn btn-primary me-2" />
+					<input type="button" value="Cancel" class="btn btn-secondary"
+						id="buttonCancel" />
+				</div>
+			</form>
+		</div>
+		<div th:replace="~{modal_fragments :: modal_dialog}"></div>
+		<div th:replace="~{orders/add_product_modal :: content}"></div>
+	</div>
+	<script type="text/javascript">
+		moduleURL = "[[@{/orders}]]";
+		contextPath = "[[@{/}]]"
+		var csrfHeaderName = "[[${_csrf.headerName}]]";
+		var csrfValue = "[[${_csrf.token}]]";
+	</script>
+	<script type="text/javascript" th:src="@{/js/common_form.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/common_form_country_state.js}"></script>
+	<script th:src="@{/js/jquery.number.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/order_form_overview_products.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/order_form_add_product.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/js/order_form_remove_product.js}"></script>
+	<script type="text/javascript"
+			th:src="@{/js/order_form_track.js}"></script>
+</body>
+</html>

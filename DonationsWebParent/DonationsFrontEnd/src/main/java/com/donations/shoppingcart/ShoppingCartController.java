@@ -8,9 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.donations.Utility;
+import com.donations.address.AddressService;
+import com.donations.common.entity.Address;
 import com.donations.common.entity.CartItem;
 import com.donations.common.entity.Customer;
+import com.donations.common.entity.ShippingRate;
 import com.donations.customer.CustomerService;
+import com.donations.shipping.ShippingRateService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,6 +26,12 @@ public class ShoppingCartController {
 	@Autowired
 	private CustomerService customerService;
 
+	@Autowired
+	private ShippingRateService shippingRateService;
+
+	@Autowired
+	private AddressService addressService;
+
 	@GetMapping("/cart")
 	public String viewCart(HttpServletRequest request, Model model) {
 		Customer customer = getAuthenticatedCustomer(request);
@@ -30,8 +40,22 @@ public class ShoppingCartController {
 		for (CartItem cartItem : listCartItems) {
 			estimatedTotal += cartItem.getSubtotal();
 		}
+
+		Address defaultAddress = addressService.getDefaultAddress(customer);
+		ShippingRate shippingRate = null;
+		boolean userPrimaryAddressAsDefault = false;
+
+		if (defaultAddress != null) {
+			shippingRate = shippingRateService.getShippingRateByDefaultAddress(defaultAddress);
+		} else {
+			userPrimaryAddressAsDefault = true;
+			shippingRate = shippingRateService.getShippingRateForCustomer(customer);
+		}
+
 		model.addAttribute("listCartItems", listCartItems);
 		model.addAttribute("estimatedTotal", estimatedTotal);
+		model.addAttribute("userPrimaryAddressAsDefault", userPrimaryAddressAsDefault);
+		model.addAttribute("shippingSupported", shippingRate != null);
 		return "cart/shopping_cart";
 	}
 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<div class="pt-3 mx-auto ps-4">
+			<fieldset disabled>
+				<div class="input-group mb-4 row">
+					<label class="col-sm-2 col-form-label">Order Id</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:field="${order.id}"
+							readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-4 row">
+					<label class="col-sm-2 col-form-label">Customer Name</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							th:field="${order.customer.fullName}" readonly="readonly" />
+					</div>
+				</div>
+			</fieldset>
+			<div class="input-group mb-4 row d-flex align-items-center">
+				<label class="col-sm-2 col-form-label">Product Cost</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" th:field="*{productCost}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-4 row d-flex align-items-center">
+				<label class="col-sm-2 col-form-label">Sub Total</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" th:field="*{subtotal}"
+						required="required" />
+				</div>
+			</div>
+
+			<div class="input-group mb-4 row d-flex align-items-center">
+				<label class="col-sm-2 col-form-label">Shipping Cost</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"
+						th:field="*{shippingCost}" required="required" />
+				</div>
+			</div>
+
+			<div class="input-group mb-3 row">
+				<label class="col-sm-2 form-check-label">Tax</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" th:field="*{tax}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-4 row d-flex align-items-center">
+				<label class="col-sm-2 col-form-label">Total</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" th:field="*{total}"
+						required="required" />
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-2 form-check-label">Payment Method</label>
+				<div class="col-sm-10">
+					<select class="form-select" th:field="*{paymentMethod}"
+						required="required">
+						<th:block th:each="paymentMethod : ${listPaymentMethods}">
+							<option th:value="${paymentMethod}" th:text="${paymentMethod}"></option>
+						</th:block>
+					</select>
+				</div>
+			</div>
+			<div class="input-group mb-3 row">
+				<label class="col-sm-2 form-check-label">Status</label>
+				<div class="col-sm-10">
+					<select class="form-select" th:field="*{orderStatus}"
+						required="required">
+						<th:block th:each="status : ${listStatus}">
+							<option th:value="${status}" th:text="${status}"></option>
+						</th:block>
+					</select>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

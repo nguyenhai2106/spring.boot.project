@@ -1,4 +1,4 @@
-package com.donations.common.entity;
+package com.donations.common.entity.setting;
 
 import java.util.List;
 
@@ -26,7 +26,6 @@ public class SettingBag {
 	}
 
 	public void update(String key, String value) {
-		System.out.println("ABCD " + key + " - " + value);
 		Setting setting = get(key);
 		if (setting != null && value != null) {
 			setting.setValue(value);

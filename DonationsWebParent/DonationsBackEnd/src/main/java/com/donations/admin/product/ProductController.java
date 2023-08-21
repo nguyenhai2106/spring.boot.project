@@ -24,7 +24,7 @@ import com.donations.admin.paging.PagingAndSortingParam;
 import com.donations.admin.security.DonationsUserDetails;
 import com.donations.common.entity.Brand;
 import com.donations.common.entity.Category;
-import com.donations.common.entity.Product;
+import com.donations.common.entity.product.Product;
 import com.donations.common.exception.ProductNotFoundException;
 
 @Controller

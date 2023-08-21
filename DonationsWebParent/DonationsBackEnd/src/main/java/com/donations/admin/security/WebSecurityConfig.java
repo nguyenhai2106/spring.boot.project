@@ -25,30 +25,31 @@ public class WebSecurityConfig {
 
 	@Bean
 	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.userDetailsService(userDetailsService())
-                .authorizeHttpRequests()
-                .requestMatchers("/users/**", "/settings/**", "/countries/**", "/states/**").hasAnyAuthority("Admin")
+		http.userDetailsService(userDetailsService()).authorizeHttpRequests()
+				.requestMatchers("/users/**", "/settings/**", "/countries/**", "/states/**").hasAnyAuthority("Admin")
 
-                .requestMatchers("/categories/**", "/brands/**").hasAnyAuthority("Admin", "Editor")
+				.requestMatchers("/categories/**", "/brands/**").hasAnyAuthority("Admin", "Editor")
 
-                .requestMatchers("/products", "/products/", "/products/detail/**", "products/page/**")
-                .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
+				.requestMatchers("/products", "/products/", "/products/detail/**", "products/page/**")
+				.hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper")
 
-                .requestMatchers("/products/new", "/products/delete/**").hasAnyAuthority("Admin", "Editor")
+				.requestMatchers("/products/new", "/products/delete/**").hasAnyAuthority("Admin", "Editor")
 
-                .requestMatchers("/products/edit/**", "/products/save", "/products/check_unique").hasAnyAuthority("Admin", "Editor", "Salesperson")
+				.requestMatchers("/products/edit/**", "/products/save", "/products/check_unique")
+				.hasAnyAuthority("Admin", "Editor", "Salesperson")
 
-                .requestMatchers("/products/**").hasAnyAuthority("Admin", "Editor")
+				.requestMatchers("/products/**").hasAnyAuthority("Admin", "Editor")
 
-                .anyRequest().authenticated()
-                .and()
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .usernameParameter("email")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/", true).permitAll()).logout(logout -> logout.permitAll()).rememberMe(me -> me
-                .key("SWP490x_01_Assignment4_haintfx17393")
-                .tokenValiditySeconds(7 * 24 * 60 * 60));
+				.requestMatchers("/customers/**", "/orders/**", "/get_shipping_cost")
+				.hasAnyAuthority("Admin", "Salesperson")
+
+				.anyRequest().authenticated().and()
+				.formLogin(login -> login.loginPage("/login").usernameParameter("email").loginProcessingUrl("/login")
+						.defaultSuccessUrl("/", true).permitAll())
+				.logout(logout -> logout.permitAll())
+				.rememberMe(me -> me.key("SWP490x_01_Assignment4_haintfx17393").tokenValiditySeconds(7 * 24 * 60 * 60));
+		
+		http.headers(headers -> headers.frameOptions().sameOrigin());
 		return http.build();
 	}
 

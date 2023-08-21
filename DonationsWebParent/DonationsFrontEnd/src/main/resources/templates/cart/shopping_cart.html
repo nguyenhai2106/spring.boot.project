@@ -33,7 +33,7 @@
 											<p class="lead fw-normal mt-1 mb-0 text-danger">
 												Price:
 												<th:block
-													th:replace="product/product_fragment::price_fragment(${item.product.discountPrice})"></th:block>
+													th:replace="~{product/product_fragment::price_fragment(${item.product.discountPrice})}"></th:block>
 											</p>
 										</div>
 										<div
@@ -80,17 +80,34 @@
 											th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
 									</h4>
 								</div>
-								<button type="button" class="btn btn-danger btn-block btn-lg">
-									<span class="d-none d-sm-block">Proceed to Pay</span>
-									<i class="fa-solid fa-wallet d-sm-none"></i>
-								</button>
+								<div th:if="${shippingSupported}">
+									<form th:action="@{/checkout}">
+										<button type="submit" class="btn btn-danger btn-block btn-lg">
+											<span class="d-none d-sm-block">Proceed to Pay</span> <i
+												class="fa-solid fa-wallet d-sm-none"></i>
+										</button>
+									</form>
+								</div>
+								<div th:unless="${shippingSupported}"
+									class="d-flex flex-column justify-content-center">
+									<span class="text-warning mb-0">Delivery not available
+										at this address</span> <span class="text-primary mb-0"> <th:block
+											th:if="${userPrimaryAddressAsDefault}">
+											<a th:href="@{/account_details(redirect=cart)}">Please
+												update your address</a>
+										</th:block> <th:block th:unless="${userPrimaryAddressAsDefault}">
+											<a th:href="@{/shipping_addresses(redirect=cart)}">Please
+												select a different address</a>
+										</th:block>
+									</span>
+								</div>
 							</div>
 						</div>
 
 						<div class="text-center text-secondary mb-0 py-2">
 							<h4 id="sectionEmptyCartMessage"
-								th:class="${#lists.isEmpty(listCartItems) ? '' : ' d-none'}">You
-								have not chosen any products yet</h3>
+								th:class="${#lists.isEmpty(listCartItems) ? '' : ' d-none'}">
+								You have not chosen any products yet</h4>
 						</div>
 
 					</div>

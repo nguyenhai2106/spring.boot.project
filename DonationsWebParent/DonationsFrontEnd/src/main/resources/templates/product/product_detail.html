@@ -24,18 +24,18 @@
 				<div class="col-12 col-lg-6 p-3">
 					<div id="carouselExampleInterval" class="carousel slide"
 						data-bs-ride="carousel">
-						<div class="carousel-inner" style="height: 450px">
+						<div class="carousel-inner">
 							<div class="carousel-item active text-center"
 								style="height: fit-content; line-height: 450px">
 								<img th:src="@{${product.mainImagePath}}" class="img-fluid"
-									alt="Main Image" style="width: 75%; object-fit: scale-down" />
+									alt="Main Image" style="max-width: 50%; object-fit: scale-down" />
 							</div>
 							<th:block th:each="extraImage : ${product.images}">
 								<div class="carousel-item text-center"
 									style="height: fit-content; line-height: 450px">
 									<img th:src="@{${extraImage.extraImagePath}}"
 										class="img-fluid center-block" alt="Main Image"
-										style="width: 75%; object-fit: scale-down" />
+										style="max-width: 50%; object-fit: scale-down" />
 								</div>
 							</th:block>
 						</div>

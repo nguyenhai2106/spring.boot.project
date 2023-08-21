@@ -38,7 +38,6 @@
 		</th:block>
 	</div>
 	<div class="row">
-		<!-- Product card Start-->
 		<th:block th:each="product : ${listProducts}">
 			<div th:replace="~{product/product_fragment :: content}"></div>
 		</th:block>
