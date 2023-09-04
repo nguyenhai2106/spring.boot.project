@@ -26,6 +26,7 @@ public class WebSecurityConfig {
 	@Bean
 	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.userDetailsService(userDetailsService()).authorizeHttpRequests()
+				.requestMatchers("/states/list_by_country/**").hasAnyAuthority("Admin", "Salesperson")
 				.requestMatchers("/users/**", "/settings/**", "/countries/**", "/states/**").hasAnyAuthority("Admin")
 
 				.requestMatchers("/categories/**", "/brands/**").hasAnyAuthority("Admin", "Editor")
@@ -40,15 +41,21 @@ public class WebSecurityConfig {
 
 				.requestMatchers("/products/**").hasAnyAuthority("Admin", "Editor")
 
+				.requestMatchers("/orders", "/orders/", "/orders/page/**", "/orders/detail/**")
+				.hasAnyAuthority("Admin", "Salesperson", "Shipper")
+
 				.requestMatchers("/customers/**", "/orders/**", "/get_shipping_cost")
 				.hasAnyAuthority("Admin", "Salesperson")
+				
+				.requestMatchers("/orders_shipper/update/")
+				.hasAuthority("Shipper")
 
 				.anyRequest().authenticated().and()
 				.formLogin(login -> login.loginPage("/login").usernameParameter("email").loginProcessingUrl("/login")
 						.defaultSuccessUrl("/", true).permitAll())
 				.logout(logout -> logout.permitAll())
 				.rememberMe(me -> me.key("SWP490x_01_Assignment4_haintfx17393").tokenValiditySeconds(7 * 24 * 60 * 60));
-		
+
 		http.headers(headers -> headers.frameOptions().sameOrigin());
 		return http.build();
 	}

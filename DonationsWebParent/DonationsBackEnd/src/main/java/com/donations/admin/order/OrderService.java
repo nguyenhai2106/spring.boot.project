@@ -1,5 +1,6 @@
 package com.donations.admin.order;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -14,6 +15,8 @@ import com.donations.admin.paging.PagingAndSortingHelper;
 import com.donations.admin.setting.country.CountryRepository;
 import com.donations.common.entity.Country;
 import com.donations.common.entity.order.Order;
+import com.donations.common.entity.order.OrderStatus;
+import com.donations.common.entity.order.OrderTrack;
 import com.donations.common.exception.OrderNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -78,4 +81,19 @@ public class OrderService {
 		orderRepository.save(orderInForm);
 	}
 
+	public void updateStatus(Integer orderId, String status) {
+		Order order = orderRepository.findById(orderId).get();
+		OrderStatus statusToUpdate = OrderStatus.valueOf(status);
+		if (!order.hasStatus(statusToUpdate)) {
+			List<OrderTrack> orderTracks = order.getOrderTracks();
+			OrderTrack orderTrack = new OrderTrack();
+			orderTrack.setOrder(order);
+			orderTrack.setUpdatedTime(new Date());
+			orderTrack.setStatus(statusToUpdate);
+			orderTrack.setNotes(statusToUpdate.defaultDescription());
+			orderTracks.add(orderTrack);
+			order.setOrderStatus(statusToUpdate);
+			orderRepository.save(order);
+		}
+	}
 }

@@ -1,5 +1,8 @@
 package com.donations.admin.order;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +24,7 @@ import com.donations.common.entity.Country;
 import com.donations.common.entity.order.Order;
 import com.donations.common.entity.order.OrderDetail;
 import com.donations.common.entity.order.OrderStatus;
+import com.donations.common.entity.order.OrderTrack;
 import com.donations.common.entity.order.PaymentMethod;
 import com.donations.common.entity.product.Product;
 import com.donations.common.entity.setting.Setting;
@@ -47,11 +51,11 @@ public class OrderController {
 	public String listByPage(@PathVariable(name = "pageNum") int pageNum,
 			@PagingAndSortingParam(listName = "listOrders", moduleURL = "/orders") PagingAndSortingHelper helper,
 			HttpServletRequest request, @AuthenticationPrincipal DonationsUserDetails loggedUser) {
+		orderService.listByPage(pageNum, helper);
+		loadCurrencySetting(request);
 		if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Salespersion") && loggedUser.hasRole("Shipper")) {
 			return "orders/orders_shipper";
 		}
-		orderService.listByPage(pageNum, helper);
-		loadCurrencySetting(request);
 		return "orders/orders";
 	}
 
@@ -114,6 +118,7 @@ public class OrderController {
 		String countryName = request.getParameter("countryName");
 		order.setCountry(countryName);
 		updateProductDetails(order, request);
+		updateOrderTracks(order, request);
 		orderService.save(order);
 		redirectAttributes.addFlashAttribute("message",
 				"The order Id " + order.getId() + " has been updated successfully");
@@ -132,12 +137,6 @@ public class OrderController {
 		Set<OrderDetail> orderDetails = order.getOrderDetails();
 
 		for (int i = 0; i < detailIds.length; i++) {
-//			System.out.println("detailIds: " + detailIds[i]);
-//			System.out.println("productIds: " + productIds[i]);
-//			System.out.println("productPrices: " + productPrices[i]);
-//			System.out.println("productQuantitys: " + productQuantites[i]);
-//			System.out.println("productCost: " + productCosts[i]);
-//			System.out.println("productShippingCosts: " + productShippingCosts[i]);
 			OrderDetail orderDetail = new OrderDetail();
 			Integer detailId = Integer.parseInt(detailIds[i]);
 			if (detailId > 0) {
@@ -152,6 +151,33 @@ public class OrderController {
 			orderDetail.setSubtotal(Float.parseFloat(productSubtotals[i]));
 
 			orderDetails.add(orderDetail);
+		}
+	}
+
+	public void updateOrderTracks(Order order, HttpServletRequest request) {
+		System.out.println("DEBUGS");
+		String[] trackIds = request.getParameterValues("trackId");
+		String[] trackDates = request.getParameterValues("trackDate");
+		String[] trackStatuses = request.getParameterValues("trackStatus");
+		String[] trackNotes = request.getParameterValues("trackNote");
+		List<OrderTrack> orderTracks = order.getOrderTracks();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		System.out.println(trackStatuses.length);
+		for (int i = 0; i < trackIds.length; i++) {
+			OrderTrack orderTrack = new OrderTrack();
+			Integer trackId = Integer.parseInt(trackIds[i]);
+			if (trackId > 0) {
+				orderTrack.setId(trackId);
+			}
+			orderTrack.setOrder(order);
+			orderTrack.setStatus(OrderStatus.valueOf(trackStatuses[i]));
+			orderTrack.setNotes(trackNotes[i]);
+			try {
+				orderTrack.setUpdatedTime(dateFormat.parse(trackDates[i]));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			orderTracks.add(orderTrack);
 		}
 	}
 }

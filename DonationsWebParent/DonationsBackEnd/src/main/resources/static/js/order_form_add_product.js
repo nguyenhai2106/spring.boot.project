@@ -57,7 +57,7 @@ function getProductInfor(productId, shippingCost) {
 }
 
 function generateProductCode(productId, mainImagePath, productName, productCost, productPrice, shippingCost) {
-	let nextCount = $(".hiddenProductId").length + 1;
+	let nextCount = $(". ").length + 1;
 	let quantityId = "quantity" + nextCount;
 	let priceId = "price" + nextCount;
 	let subtotalId = "subtotal" + nextCount;

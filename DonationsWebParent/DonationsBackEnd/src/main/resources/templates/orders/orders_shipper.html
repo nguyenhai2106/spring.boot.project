@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments :: page_head('Orders - Donations Admin', 'none')}" />
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div th:replace="~{navigation :: navigationMenu}"></div>
+		<div class="container mt-3">
+			<div class="my-3">
+				<h2 align="center">Quản lý Đơn hàng</h2>
+
+				<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+					<div class="d-none d-sm-block text-center">
+						<a class="btn btn-secondary mb-2" th:href="@{/orders/export/csv}">Export
+							To CSV</a>
+					</div>
+					<div class="d-md-none d-lg-none text-center">
+						<a class="mb-2 fas fa-file-csv fa-2x icon-dark me-3" th:href="@{/orders/export/csv}"></a>
+					</div>
+				</th:block>
+
+			</div>
+			<div th:if="${message != null}"
+				class="alert alert-success alert-dismissible fade show col-8 mx-auto text-center" role="alert">
+				[[${message}]]
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		</div>
+
+		<!-- Search Form -->
+		<div class="container">
+			<form th:action="@{/orders/page/1}" class="form-inline d-block" id="searchForm">
+				<div class="mb-3 d-flex col-12 mx-auto row">
+					<input type="hidden" name="sortField" th:value="${sortField}" /> <input type="hidden" name="sortDir"
+						th:value="${sortDir}" />
+					<th:block th:replace="~{fragments :: search_form()}"></th:block>
+				</div>
+			</form>
+		</div>
+
+		<!-- Responsive LG -->
+		<div class="container d-none d-lg-block">
+			<table class="table table-bordered table-striped table-hover table-responsive-xl">
+				<thead class="table-dark">
+					<tr>
+						<th th:replace="~{fragments :: column_link('id', 'ID')}"></th>
+						<th th:replace="~{fragments :: column_link('firstName', 'Customer')}"></th>
+						<th th:replace="~{fragments :: column_link('total', 'Total')}"></th>
+						<th th:replace="~{fragments :: column_link('orderTime', 'Order Time')}"></th>
+						<th th:replace="~{fragments :: column_link('destination', 'Destination')}"></th>
+						<th th:replace="~{fragments :: column_link('paymentMethod', 'Payment Method')}"></th>
+						<th th:replace="~{fragments :: column_link('orderStatus', 'Status')}"></th>
+						<th class="text-center">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="order : ${listOrders}">
+						<td class="text-center align-middle">[[${order.id}]]</td>
+						<td class="text-center align-middle"><a class="link-customer-detail"
+								th:href="@{'/customers/detail/' + ${order.customer.id}}">
+								[[${order.customer.fullName}]]</a></td>
+						<td class="text-center align-middle">
+							<div class="col-sm-10">
+								<div th:replace="~{fragments :: format_currency(${order.total})}"></div>
+							</div>
+						</td>
+						<td class="text-center align-middle">
+							<div th:replace="~{fragments :: format_time(${order.orderTime})}"></div>
+						</td>
+						<td class="text-endc align-middle">[[${order.destination}]]</td>
+						<td class="text-center align-middle">[[${order.paymentMethod}]]</td>
+						<td class="text-center align-middle">[[${order.orderStatus}]]</td>
+						</th:block>
+						<td class="text-center align-middle" style="width: 8%;"><a
+								th:href="@{'/orders/detail/' + ${order.id}}" title="View this product"
+								class="pe-2 link-detail"> <i class="fas fa-file-alt text-primary"
+									aria-hidden="true"></i>
+							</a>
+							<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+								<a th:href="@{'/orders/edit/' + ${order.id}}" class="pe-2 text-decoration-none"
+									title="Edit this order"><i class="fa fa-edit text-primary"
+										aria-hidden="true"></i></a>
+							</th:block>
+							<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+								<a th:href="@{'/orders/delete/' + ${order.id}}"
+									class="text-danger text-decoration-none link-delete" title="Delete this order"
+									th:orderId="${order.id}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+							</th:block>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Responsive MD -->
+		<div class="container d-none d-sm-block d-lg-none">
+			<table class="table table-bordered table-striped table-hover table-responsive-xl">
+				<thead class="table-dark">
+					<tr>
+						<th th:replace="~{fragments :: column_link('id', 'ID')}"></th>
+						<th th:replace="~{fragments :: column_link('total', 'Total')}"></th>
+						<th th:replace="~{fragments :: column_link('orderTime', 'Order Time')}"></th>
+						<th th:replace="~{fragments :: column_link('paymentMethod', 'Payment')}"></th>
+						<th th:replace="~{fragments :: column_link('orderStatus', 'Status')}"></th>
+						<th class="text-center">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="order : ${listOrders}">
+						<td class="text-center align-middle">[[${order.id}]]</td>
+						<td class="text-center align-middle">
+							<div th:replace="~{fragments :: format_currency(${order.total})}"></div>
+						</td>
+						<td class="text-center align-middle">
+							<div th:replace="~{fragments :: format_time(${order.orderTime})}"></div>
+						</td>
+						<td class="text-center align-middle">[[${order.paymentMethod}]]</td>
+						<td class="text-center align-middle">[[${order.orderStatus}]]</td>
+						<th:block>
+							<td class="text-center align-middle" style="width: 15%;"><a
+									th:href="@{'/orders/detail/' + ${order.id}}" title="View this product"
+									class="pe-2 link-detail"> <i class="fas fa-file-alt text-primary"
+										aria-hidden="true"></i>
+								</a>
+								<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+									<a th:href="@{'/orders/edit/' + ${order.id}}" class="pe-2 text-decoration-none"
+										title="Edit this order"><i class="fa fa-edit text-primary"
+											aria-hidden="true"></i></a>
+								</th:block>
+								<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+									<a th:href="@{'/orders/delete/' + ${order.id}}"
+										class="text-danger text-decoration-none link-delete" title="Delete this order"
+										th:orderId="${order.id}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+								</th:block>
+							</td>
+						</th:block>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- Responsive SM -->
+		<div class="container d-block d-sm-none">
+			<table class="table table-bordered table-striped table-hover table-responsive-xl">
+				<thead class="table-info">
+					<tr>
+						<th class="text-center">Thông tin Đơn hàng</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="order : ${listOrders}">
+						<td class="align-middle">
+							<div class="">
+								<div class="cart-header">
+									<span class="text-primary">
+										<a th:href="@{'/orders/detail/' + ${order.id}}" title="View this product"
+											class="pe-2 link-detail"> <b>Mã đơn hàng #[[${order.id}]]</b>
+										</a>
+									</span>
+								</div>
+								<div class="card-body">
+									<p class="card-title mb-1 fw-bold"><i class="fa-solid fa-user"></i>
+										[[${order.customer.fullName}]]</p>
+									<p class="card-title mb-1 fw-bold"><i class="fa-solid fa-phone"></i>
+										[[${order.customer.phoneNumber}]]</p>
+									<p class="card-text mb-1">
+										<span><i class="fa-solid fa-location-dot"></i>
+											[[${order.recipientAddress}]]</span>
+									</p>
+									<th:block th:if="${order.COD}">
+										<p class="card-text">
+											<span>
+												<i class="fa-solid fa-money-bill-transfer"></i>
+												<div th:replace="~{fragments :: format_currency(${order.total})}"></div>
+											</span>
+										</p>
+									</th:block>
+								</div>
+								<div class="card-footer d-flex justify-content-around mt-2">
+									<div
+										th:replace="~{orders/order_status_fragment :: content(${order.picked}, 'PICKED', 'fa-people-carry')}">
+									</div>
+									<div
+										th:replace="~{orders/order_status_fragment :: content(${order.shipping}, 'SHIPPING', 'fa-truck')}">
+									</div>
+									<div
+										th:replace="~{orders/order_status_fragment :: content(${order.delivered}, 'DELIVERED', 'fa-box-open')}">
+									</div>
+									<div
+										th:replace="~{orders/order_status_fragment :: content(${order.returnRequested}, 'RETURN_REQUESTED', 'fa-arrow-rotate-left')}">
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal fade" id="detailModal">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content"></div>
+			</div>
+		</div>
+		
+		<div class="modal fade text-center" id="confirmModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Update Confirmation</h4>
+						<button type="button" class="close" data-bs-dismiss="modal"
+							aria-label="Close">&times;</button>
+					</div>
+
+					<div class="modal-body">
+						<span id="confirmText"></span>
+					</div>
+
+					<div class="modal-footer">
+						<a class="btn btn-primary text-decoration-none" href=""
+							id="yesButton">Yes</a>
+						<button type="button" class="btn btn-danger"
+							data-bs-dismiss="modal" id="noButton">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="~{fragments :: pagination('orders')}"></div>
+		<div th:replace="~{fragments :: footer}"></div>
+	</div>
+	<script type="text/javascript" th:src="@{/js/jquery.number.min.js}"></script>
+	<script type="text/javascript">
+		moduleURL = "[[@{/orders}]]";
+		let csrfHeaderName = "[[${_csrf.headerName}]]";
+		let csrfValue = "[[${_csrf.token}]]";
+		$(document).ready(
+			function () {
+				$("[name='keyword']").attr("placeholder", "Nhập #Mã đơn hàng")
+				$(".link-detail").click(
+					function (e) {
+						e.preventDefault();
+						let linkDetailURL = $(this).attr("href");
+						console.log(linkDetailURL);
+						$("#detailModal").modal("show").find(
+							".modal-content").load(linkDetailURL);
+					})
+				$(".link-customer-detail").click(
+					function (e) {
+						e.preventDefault();
+						linkDetailURL = $(this).attr("href");
+						$("#detailModal").modal("show").find(
+							".modal-content").load(linkDetailURL);
+					})
+			});
+		function clearFilter() {
+			window.location = "[[@{/orders}]]"
+		}
+	</script>
+	<script type="text/javascript" th:src="@{/js/order_shipper.js}"></script>
+</body>
+
+</html>

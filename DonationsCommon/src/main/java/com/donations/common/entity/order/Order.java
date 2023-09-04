@@ -243,4 +243,58 @@ public class Order extends AbstractAddress {
 		}
 	}
 
+	@Transient
+	public String getRecipientAddress() {
+		String address = addressLine1;
+		if (!city.isEmpty()) {
+			address += ", " + city;
+		}
+		if (!country.isEmpty()) {
+			address += ", " + country;
+		}
+		if (!postalCode.isEmpty()) {
+			address += " (" + postalCode + ")";
+		}
+		return address;
+	}
+
+	@Transient
+	public boolean isCOD() {
+		return paymentMethod.equals(PaymentMethod.COD);
+	}
+
+	@Transient
+	public boolean isShipping() {
+		return hasStatus(OrderStatus.SHIPPING);
+	}
+
+	@Transient
+	public boolean isPicked() {
+		return hasStatus(OrderStatus.PICKED);
+	}
+
+	@Transient
+	public boolean isDelivered() {
+		return hasStatus(OrderStatus.DELIVERED);
+	}
+
+	@Transient
+	public boolean isReturnRequested() {
+		return hasStatus(OrderStatus.RETURN_REQUESTED);
+	}
+
+	@Transient
+	public boolean isReturned() {
+		return hasStatus(OrderStatus.RETURNED);
+	}
+
+	public boolean hasStatus(OrderStatus status) {
+		for (OrderTrack orderTrack : orderTracks) {
+			if (orderTrack.getStatus().equals(status)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

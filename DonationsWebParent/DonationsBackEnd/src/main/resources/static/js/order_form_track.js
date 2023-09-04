@@ -1,6 +1,6 @@
 let trackRecordCount;
 document.addEventListener("DOMContentLoaded", function() {
-	trackRecordCount = document.querySelectorAll(".hiddenProductId").length;
+	trackRecordCount = document.querySelectorAll(".hiddenTrackId").length;
 	document.getElementById("trackList").addEventListener("click", function(e) {
 		if (e.target && e.target.classList.contains("linkRemoveTrack")) {
 			e.preventDefault();
@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
 })
 
 function deleteTrack(link) {
+	console.log("DEBUGS");
 	let rowNumber = link.getAttribute("rowNumber");
 	document.getElementById("rowTrack" + rowNumber).remove();
 	trackRecordCount--;
@@ -50,7 +51,7 @@ function generateTrackCode() {
 	let trackNoteId = "trackNote" + nextCount;
 	let currentDateTime = formatCurrentDateTime();
 	let htmlCode = `
-		<div class="rounded p-4 rounded-3 border border-1 border-semi-secondary mt-3" id="${rowId}">
+		<div class="rounded p-4 rounded-3 border border-1 border-semi-secondary" id="${rowId}">
             <div class="row align-items-center">
                 <input type="hidden" name="trackId" value="0" class="hiddenTrackId">
                 <div class="col-1 text-center divCountTrack">${nextCount}</div>
@@ -79,7 +80,7 @@ function generateTrackCode() {
                     <div class="input-group row">
                         <label class="col-sm-3 col-form-label">Note</label>
                         <div class="col-sm-9">
-                            <textarea name="trackNotes" cols="10" rows="2" class="form-control"
+                            <textarea name="trackNote" cols="10" rows="2" class="form-control"
                                       id="${trackNoteId}" required></textarea>
                         </div>
                     </div>
@@ -98,8 +99,9 @@ function generateTrackCode() {
 function formatCurrentDateTime() {
 	let date = new Date();
 	let year = date.getFullYear();
-	let month = date.getMonth();
+	let month = date.getMonth() + 1;
 	let day = date.getDate();
+	console.log(month + " " + day)
 	let hour = date.getHours();
 	let minute = date.getMinutes();
 	let second = date.getSeconds();
