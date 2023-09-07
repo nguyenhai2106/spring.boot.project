@@ -3,6 +3,8 @@ package com.donations.common.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.donations.common.constants.Constants;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -165,7 +167,7 @@ public class Category extends IdBaseEntity{
 	public String getImagePath() {
 		if (id == null || image == null)
 			return "/images/default-image.png";
-		return "/category-images/" + this.id + "/" + this.image;
+		return Constants.GCS_BASE_URI + "/category-images/" + this.id + "/" + this.image;
 	}
 
 }

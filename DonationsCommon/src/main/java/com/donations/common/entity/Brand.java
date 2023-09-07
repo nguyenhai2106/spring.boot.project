@@ -5,11 +5,10 @@ import java.util.Set;
 
 import org.hibernate.annotations.ManyToAny;
 
+import com.donations.common.constants.Constants;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Table;
@@ -75,7 +74,7 @@ public class Brand extends IdBaseEntity {
 		if (id == null || logo == null) {
 			return "/images/default-image.png";
 		} else {
-			return "/brand-logos/" + this.id + "/" + this.logo;
+			return Constants.GCS_BASE_URI + "/brand-logos/" + this.id + "/" + this.logo;
 		}
 	}
 

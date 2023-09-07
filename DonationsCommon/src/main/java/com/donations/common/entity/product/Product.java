@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.Nationalized;
 
+import com.donations.common.constants.Constants;
 import com.donations.common.entity.Brand;
 import com.donations.common.entity.Category;
 import com.donations.common.entity.IdBaseEntity;
@@ -272,7 +273,7 @@ public class Product extends IdBaseEntity {
 		if (id == null || mainImage == null) {
 			return "/images/default-image.png";
 		}
-		return "/product-images/" + this.id + "/" + this.mainImage;
+		return Constants.GCS_BASE_URI + "/product-images/" + this.id + "/" + this.mainImage;
 	}
 
 	public Set<ProductDetails> getDetails() {

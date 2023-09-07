@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import com.donations.common.constants.Constants;
 
 @Entity
 @Table(name = "product_images")
@@ -56,7 +57,7 @@ public class ProductImage extends IdBaseEntity {
 
 	@Transient
 	public String getExtraImagePath() {
-		return "/product-images/" + product.getId() + "/extras/" + this.name;
+		return Constants.GCS_BASE_URI + "/product-images/" + product.getId() + "/extras/" + this.name;
 	}
 
 }

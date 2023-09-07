@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donations.admin.FileUploadUtil;
+import com.donations.common.constants.Constants;
 import com.donations.common.entity.Currency;
 import com.donations.common.entity.GeneralSettingBag;
 import com.donations.common.entity.setting.Setting;
@@ -37,6 +38,7 @@ public class SettingController {
 		for (Setting setting : listSettings) {
 			model.addAttribute(setting.getKey(), setting.getValue());
 		}
+		model.addAttribute("GCS_BASE_URI", Constants.GCS_BASE_URI);
 		return "settings/settings";
 	}
 
