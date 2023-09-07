@@ -22,6 +22,7 @@ public class MainController {
 	public String viewHomePage(Model model) {
 		List<Category> listCategories = categoryService.listNoChildrenCategories();
 		model.addAttribute("listCategories", listCategories);
+		model.addAttribute("moduleURL", "/search");
 		return "index";
 	}
 

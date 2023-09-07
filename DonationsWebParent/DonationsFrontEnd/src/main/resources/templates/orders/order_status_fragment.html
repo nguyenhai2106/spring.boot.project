@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="content(statusVar, statusName, iconName)">
+		<th:block th:if="${statusVar}">
+			<i th:class="'fa-solid '+${iconName} + ' fa-2x icon-blue'"></i>
+		</th:block>
+		<th:block th:unless="${statusVar}">
+			<i th:class="'fa-solid '+${iconName} + ' fa-2x icon-dark'"></i>
+		</th:block>
+	</div>
+</body>
+
+</html>

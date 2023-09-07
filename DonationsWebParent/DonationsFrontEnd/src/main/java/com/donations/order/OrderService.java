@@ -7,6 +7,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.donations.checkout.CheckoutInfo;
@@ -19,9 +23,11 @@ import com.donations.common.entity.order.OrderStatus;
 import com.donations.common.entity.order.OrderTrack;
 import com.donations.common.entity.order.PaymentMethod;
 import com.donations.common.entity.product.Product;
+import com.donations.common.exception.OrderNotFoundException;
 
 @Service
 public class OrderService {
+	public static final int ORDERS_PER_PAGE = 5;
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
 	@Autowired
 	private OrderRepository orderRepository;
@@ -75,12 +81,49 @@ public class OrderService {
 		orderTrack.setStatus(OrderStatus.NEW);
 		orderTrack.setNotes(OrderStatus.NEW.defaultDescription());
 		orderTrack.setUpdatedTime(new Date());
-		
+
 		LOGGER.info("OrderService | createOrder | OrderTrack track : " + orderTrack.toString());
-		
+
 		order.getOrderTracks().add(orderTrack);
 
 		return orderRepository.save(order);
 	}
 
+	public Page<Order> listOrderForCustomerByPage(Customer customer, int pageNum, String sortField, String sortDir,
+			String keyword) {
+		Sort sort = Sort.by(sortField);
+		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+		Pageable pageable = PageRequest.of(pageNum - 1, ORDERS_PER_PAGE, sort);
+		if (keyword != null) {
+			System.out.println(keyword + "DEBUGS");
+			return orderRepository.findAll(keyword, customer.getId(), pageable);
+		}
+		return orderRepository.findAll(customer.getId(), pageable);
+	}
+
+	public Order getOrder(Integer orderId, Customer customer) throws OrderNotFoundException {
+		return orderRepository.findByIdAndCustomer(orderId, customer);
+	}
+
+	public void setOrderReturnRequested(OrderReturnRequest request, Customer customer) throws OrderNotFoundException {
+		Order order = orderRepository.findByIdAndCustomer(request.getOrderId(), customer);
+		if (order == null) {
+			throw new OrderNotFoundException("Order ID " + request.getOrderId() + " not found!");
+		}
+		if (order.isReturnRequested()) {
+			return;
+		}
+		OrderTrack orderTrack = new OrderTrack();
+		orderTrack.setOrder(order);
+		orderTrack.setUpdatedTime(new Date());
+		orderTrack.setStatus(OrderStatus.RETURN_REQUESTED);
+		String notes = "Lý do: " + request.getReason();
+		if (!"".equals(request.getNote())) {
+			notes += "; " + request.getNote();
+		}
+		orderTrack.setNotes(notes);
+		order.getOrderTracks().add(orderTrack);
+		order.setOrderStatus(OrderStatus.RETURN_REQUESTED);
+		orderRepository.save(order);
+	}
 }

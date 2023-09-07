@@ -264,6 +264,11 @@ public class Order extends AbstractAddress {
 	}
 
 	@Transient
+	public boolean isProcessing() {
+		return hasStatus(OrderStatus.PROCESSING);
+	}
+
+	@Transient
 	public boolean isShipping() {
 		return hasStatus(OrderStatus.SHIPPING);
 	}
@@ -297,4 +302,14 @@ public class Order extends AbstractAddress {
 		return false;
 	}
 
+	@Transient
+	public String getProductNames() {
+		String productNameList = "<ol class='text-start mb-0 ps-3 d-flex flex-column justify-content-around'>";
+		for (OrderDetail orderDetail : orderDetails) {
+			String productName = "<li>" + orderDetail.getProduct().getShortName() + "</li>";
+			productNameList += productName;
+		}
+		productNameList += "</ol>";
+		return productNameList;
+	}
 }

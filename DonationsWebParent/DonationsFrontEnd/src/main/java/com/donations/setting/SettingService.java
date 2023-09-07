@@ -36,6 +36,10 @@ public class SettingService {
 		List<Setting> settings = settingRepository.findByCategory(SettingCategory.PAYMENT);
 		return new PaymentSettingBag(settings);
 	}
+	
+	public List<Setting> getCurrencySettings() {
+		return settingRepository.findByCategory(SettingCategory.CURRENCY);
+	}
 
 	public String getCurrencyCode() {
 		Setting setting = settingRepository.findByKey("CURRENCY_ID");

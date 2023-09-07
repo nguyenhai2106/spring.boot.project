@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div class="modal-header border-0">
+	<h4 class="modal-title">Product Details</h4>
+	<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+</div>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+	<li class="nav-item" role="presentation"><a class="nav-link active" data-bs-toggle="tab" href="#overview"
+			data-bs-target="#overview" type="button" role="tab">Overview</a></li>
+	<li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#products"
+			data-bs-target="#products" type="button" role="tab">Products</a></li>
+	<li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#shipping"
+			data-bs-target="#shipping" type="button" role="tab">Shipping</a></li>
+	<li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#track"
+			data-bs-target="#track" type="button" role="tab">Track</a></li>
+</ul>
+<div class="tab-content">
+	<div class="tab-pane p-3 active" id="overview" role="tabpanel">
+		<fieldset disabled>
+			<div class="pt-3 mx-auto ps-4">
+				<div class="input-group mb-sm-4 row">
+					<label class="col-sm-2 col-form-label">Order Id</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:value="${order.id}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-4 row">
+					<label class="col-sm-2 col-form-label">Customer Name</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:value="${order.customer.fullName}"
+							readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-4 row d-flex align-items-center">
+					<label class="col-sm-2 col-form-label">Sub Total</label>
+					<div class="col-sm-10">
+						<div th:replace="~{fragments :: currency_input(${order.subtotal})}"></div>
+					</div>
+				</div>
+				<div class="input-group mb-sm-4 row d-flex align-items-center">
+					<label class="col-sm-2 col-form-label">Shipping Cost</label>
+					<div class="col-sm-10">
+						<div th:replace="~{fragments :: currency_input(${order.shippingCost})}"></div>
+					</div>
+				</div>
+
+				<div class="input-group mb-sm-4 row d-flex align-items-center">
+					<label class="col-sm-2 col-form-label">Total</label>
+					<div class="col-sm-10">
+						<div th:replace="~{fragments :: currency_input(${order.total})}"></div>
+					</div>
+				</div>
+				<div class="input-group mb-sm-4 row">
+					<label class="col-sm-2 col-form-label">Payment Method</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:value="${order.paymentMethod}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-4 row">
+					<label class="col-sm-2 col-form-label">Status</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" th:value="${order.orderStatus}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group row">
+					<label class="col-sm-2 col-form-label">Order Time</label>
+					<div class="col-sm-10 d-flex align-items-center">
+						<div th:replace="~{fragments :: format_time(${order.orderTime})}"></div>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<!-- Products -->
+	<div class="tab-pane p-4 pb-0" id="products" role="tabpanel">
+		<th:block th:each="orderDetail, status: ${order.orderDetails}">
+			<div class="card rounded-3 mb-4">
+				<div class="card-body">
+					<div class="row d-flex justify-content-between align-items-center">
+						<div class="col-md-2 col-lg-2 col-xl-2">
+							<span class="d-none d-sm-block"><b>[[${status.count}]]</b></span> <img
+								th:src="@{${orderDetail.product.mainImagePath}}" class="img-fluid rounded-3">
+						</div>
+						<div class="col-md-5 col-lg-5 col-xl-4 align-items-center">
+							<p class="lead fw-normal mb-0">
+								[[${orderDetail.product.shortName}]]</p>
+						</div>
+						<div class="col-md-1 col-lg-1 col-xl-1 d-flex flex-column align-items-sm-center mt-1 my-sm-0">
+							<span><b class="d-sm-none">Số lượng: </b> [[${orderDetail.quantity}]]</span>
+						</div>
+						<div class=" col-md-2 col-lg-2
+							col-xl-2 mt-2 mt-sm-0 d-flex">
+							<b class="d-sm-none me-1">Đơn giá: </b>
+							<div th:replace="~{fragments :: format_currency(${orderDetail.unitPrice})}"></div>
+						</div>
+						<div class=" col-md-2 col-lg-2
+							col-xl-2 mt-2 mt-sm-0 d-flex">
+							<b class="d-sm-none me-1">Tổng tiền: </b>
+							<div th:replace="~{fragments :: format_currency(${orderDetail.subtotal})}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</th:block>
+	</div>
+	<!-- Shipping -->
+	<div class="tab-pane px-2 pb-0" id="shipping" role="tabpanel">
+		<fieldset disabled>
+			<div class="rounded p-4 pe-0">
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Deliver Days</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.deliveryDays}" readonly="readonly" />
+					</div>
+				</div>
+
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Expected Deliver
+						Date</label>
+					<div class="col-sm-9 d-flex align-items-center">
+						<span th:text="${#dates.format(order.deliveryDate, 'E, dd MMM yyyy')}"></span>
+					</div>
+				</div>
+
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">First Name</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.firstName}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Last Name</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.lastName}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Phone Number</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.phoneNumber}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Address Line 1</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.addressLine1}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Address Line 2</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.addressLine2}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">City</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.city}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">Country</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.country}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group mb-sm-3 row">
+					<label class="col-sm-3 col-form-label">State</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.state}" readonly="readonly" />
+					</div>
+				</div>
+				<div class="input-group row">
+					<label class="col-sm-3 col-form-label">Postal Code</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" th:value="${order.postalCode}" readonly="readonly" />
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+	<!-- Track -->
+	<div class="tab-pane px-2 pb-0" id="track" role="tabpanel">
+		<div class="rounded p-4">
+			<div class="d-flex justify-content-around mb-3">
+				<div
+					th:replace="~{orders/order_status_fragment :: content(${order.processing}, 'PROCESSING', 'fa-spinner')}">
+				</div>
+				<div
+					th:replace="~{orders/order_status_fragment :: content(${order.picked}, 'PICKED', 'fa-people-carry')}">
+				</div>
+				<div th:replace="~{orders/order_status_fragment :: content(${order.shipping}, 'SHIPPING', 'fa-truck')}">
+				</div>
+				<div
+					th:replace="~{orders/order_status_fragment :: content(${order.delivered}, 'DELIVERED', 'fa-box-open')}">
+				</div>
+				<div
+					th:replace="~{orders/order_status_fragment :: content(${order.returnRequested}, 'RETURN_REQUESTED', 'fa-arrow-rotate-left')}">
+				</div>
+			</div>
+
+			<table class="table table-bordered table-striped table-hover table-responsive-xl mb-0">
+				<thead class="table-dark">
+					<tr>
+						<th class="text-center align-middle">Time</th>
+						<th class="text-center align-middle w-25">Status</th>
+						<th class="text-center align-middle">Notes</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:if="${order.orderTracks!=null && order.orderTracks.size() > 0}">
+						<tr th:each="orderTrack : ${order.orderTracks}">
+							<td class="text-center align-middle">[[${orderTrack.updatedTime}]]</td>
+							<td class="text-center align-middle">[[${orderTrack.status}]]</td>
+							<td class="align-middle">[[${orderTrack.notes}]]</td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+<div class="modal-footer mt-0">
+	<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+</div>
+
+</html>

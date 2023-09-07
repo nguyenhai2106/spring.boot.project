@@ -58,7 +58,7 @@ public class BrandController {
 			brand.setLogo(fileName);
 
 			Brand savedBrand = service.save(brand);
-			String uploadDir = "brand-logos/" + savedBrand.getId();
+			String uploadDir = "../brand-logos/" + savedBrand.getId();
 			FileUploadUtil.removeDir(uploadDir);
 			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		} else {

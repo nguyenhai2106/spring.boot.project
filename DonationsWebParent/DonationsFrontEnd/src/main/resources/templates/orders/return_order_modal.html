@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="content">
+		<div class="modal fade text-center" id="returnOrderModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="returnOrderModalTitle">Hoàn trả Đơn hàng</h4>
+						<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+					</div>
+
+					<form onsubmit="return submitReturnOrderForm();">
+						<div class="modal-body text-start">
+							<div id="divReason">
+								<h4 class="text-info">Lý do trả hàng: </h4>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="returnReason"
+										id="reason-buy-wrong" value="Mua nhầm sản phẩm"/>
+									<label class="form-check-label" for="reason-buy-wrong">
+										Mua nhầm sản phẩm
+									</label>
+								</div>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="returnReason"
+										id="reason-receive-wrong" value="Giao không đúng sản phẩm"/>
+									<label class="form-check-label" for="reason-receive-wrong">
+										Giao không đúng sản phẩm
+									</label>
+								</div>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="returnReason"
+										id="reason-damaged-product" value="Sản phẩm được giao không còn nguyên vẹn"/>
+									<label class="form-check-label" for="reason-damaged-product">
+										Sản phẩm được giao không còn nguyên vẹn
+									</label>
+								</div>
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="radio" name="returnReason"
+										id="reason-arrived-late" value="Giao hàng quá chậm"/>
+									<label class="form-check-label" for="reason-arrived-late">
+										Giao hàng quá chậm
+									</label>
+								</div>
+								<div class="form-floating mb-1" id="divReturnNote">
+									<textarea class="form-control" placeholder="Thông tin bổ sung" id="returnNote"
+										rows="3" maxlength="124"></textarea>
+									<label for="returnNote">Thông tin bổ sung</label>
+								</div>
+							</div>
+							<div id="divMessage" class="text-center"></div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary text-decoration-none" href=""
+								id="firstButton">Gửi</button>
+							<button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+								id="secondButton">Đóng</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
