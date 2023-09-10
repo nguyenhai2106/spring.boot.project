@@ -89,7 +89,7 @@ public class Product extends IdBaseEntity {
 	@Column(columnDefinition = "float default 0")
 	private float weight;
 
-	@Column(name = "main_image", nullable = false, columnDefinition = "nvarchar(1024) default 'default-images.png'")
+	@Column(name = "main_image", nullable = false, columnDefinition = "varchar(1024) default 'default-images.png'")
 	private String mainImage;
 
 	@ManyToOne

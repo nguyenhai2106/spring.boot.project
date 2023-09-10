@@ -9,8 +9,7 @@
 		<div th:replace="~{navigation :: navigationMenu}"></div>
 		<div class="container mt-2">
 			<div class="my-2">
-				<h2 align="center">Manage Orders</h2>
-
+				<h2 align="center" class="text-info">Quản lý Đơn hàng</h2>
 				<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 					<div class="d-none d-sm-block text-center">
 						<a class="btn btn-secondary mb-2" th:href="@{/orders/export/csv}">Export

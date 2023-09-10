@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,8 +52,6 @@ public class UserController {
 	public String newUser(Model model, Authentication authentication) {
 		List<Role> listRoles = service.listRoles();
 		User user = new User();
-		DonationsUserDetails userDetails = (DonationsUserDetails) authentication.getPrincipal();
-		model.addAttribute("fullname", userDetails.getFullName());
 		user.setEnabled(true);
 		model.addAttribute("user", user);
 		model.addAttribute("listRoles", listRoles);
