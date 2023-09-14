@@ -28,9 +28,9 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="DonationsBackEnd" options="-parameters" />
-      <module name="DonationsCommon" options="-parameters" />
-      <module name="DonationsFrontEnd" options="-parameters" />
+      <module name="DonationsBackEnd" options="" />
+      <module name="DonationsCommon" options="" />
+      <module name="DonationsFrontEnd" options="" />
     </option>
   </component>
 </project>

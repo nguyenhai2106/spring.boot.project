@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.donations.admin.FileUploadUtil;
+import com.donations.admin.GoogleCloudStorageService;
 import com.donations.admin.paging.PagingAndSortingHelper;
 import com.donations.admin.paging.PagingAndSortingParam;
-import com.donations.admin.security.DonationsUserDetails;
 import com.donations.admin.user.UserNotFoundException;
 import com.donations.admin.user.UserService;
 import com.donations.admin.user.exporter.UserCsvExporter;
@@ -34,6 +33,9 @@ public class UserController {
 	private String defaultRedirectURL = "redirect:/users/page/1?sortField=id&sortDir=asc";
 	@Autowired
 	private UserService service;
+
+	@Autowired
+	private GoogleCloudStorageService googleService;
 
 	@GetMapping("/users")
 	public String listFirstPage() {
@@ -66,9 +68,11 @@ public class UserController {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			user.setPhotos(fileName);
 			User savedUser = service.save(user);
-			String uploadDir = "../user-photos/" + savedUser.getId();
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			String uploadDir = "user-photos/" + savedUser.getId();
+			googleService.removeFolder(uploadDir);
+			googleService.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
+//			FileUploadUtil.cleanDir(uploadDir);
+//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		} else {
 			if (user.getPhotos().isEmpty()) {
 				user.setPhotos(null);
@@ -106,9 +110,12 @@ public class UserController {
 	public String deleteUser(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes,
 			Model model) {
 		try {
+			User user = service.get(id);
 			service.delete(id);
-			String userPhotosDir = "user-photos/" + id;
-			FileUploadUtil.removeDir(userPhotosDir);
+			String userPhotosDir = "user-photos/" + id + "/" + user.getPhotos();
+			System.out.println(userPhotosDir);
+//			FileUploadUtil.removeDir(userPhotosDir);
+			googleService.removeFolder(userPhotosDir);
 			redirectAttributes.addFlashAttribute("message",
 					"The user with ID " + id + " has been deleted successfully!");
 		} catch (UserNotFoundException e) {
@@ -120,8 +127,9 @@ public class UserController {
 	@GetMapping("users/{id}/enabled/{status}")
 	public String updateUserEnabledStatus(@PathVariable(name = "id") Integer id,
 			@PathVariable(name = "status") boolean enabled, @RequestParam("pageNum") String pageNum,
-			@RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir, @RequestParam("keyword") String keyword,
-			RedirectAttributes redirectAttributes) throws UserNotFoundException {
+			@RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir,
+			@RequestParam("keyword") String keyword, RedirectAttributes redirectAttributes)
+			throws UserNotFoundException {
 		service.updateUserEnabledStatus(id, enabled);
 		String status = enabled ? "Enabled" : "Disabled";
 		String message = "The user ID " + id + " has been " + status;

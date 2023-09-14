@@ -1,10 +1,8 @@
 package com.donations.admin.product;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -12,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.donations.admin.FileUploadUtil;
+import com.donations.admin.GoogleCloudStorageService;
 import com.donations.common.entity.product.Product;
 import com.donations.common.entity.product.ProductImage;
 
@@ -20,22 +18,15 @@ public class ProductSaveHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
 	static void deleteExtraImageWeredRemoveOnForm(Product product) {
-		String extraImageDir = "../product-images/" + product.getId() + "/extras";
-		Path dirPath = Paths.get(extraImageDir);
-		try {
-			Files.list(dirPath).forEach(file -> {
-				String fileName = file.toFile().getName();
-				if (!product.containsImageName(fileName)) {
-					try {
-						Files.delete(file);
-						LOGGER.info("Deleted extra image: " + fileName);
-					} catch (IOException e) {
-						LOGGER.error("Could not delete extra image: " + fileName);
-					}
-				}
-			});
-		} catch (IOException e) {
-			LOGGER.error("Could not list directory: " + dirPath);
+		String extraImageDir = "product-images/" + product.getId() + "/extras";
+		List<String> listObjectKey = GoogleCloudStorageService.listFolders(extraImageDir);
+		for (String objectKey : listObjectKey) {
+			int lastIndexOfSlash = objectKey.lastIndexOf("/");
+			String fileName = objectKey.substring(lastIndexOfSlash + 1, objectKey.length());
+			if (!product.containsImageName(fileName)) {
+				GoogleCloudStorageService.deleteFile(objectKey);
+				System.out.println("Deleted: " + objectKey);
+			}
 		}
 	}
 
@@ -76,17 +67,23 @@ public class ProductSaveHelper {
 			Product savedProduct) throws IOException {
 		if (!mainImageMultipartFile.isEmpty()) {
 			String fileName = StringUtils.cleanPath(mainImageMultipartFile.getOriginalFilename());
-			String uploadDir = "../product-images/" + savedProduct.getId();
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipartFile);
+			String uploadDir = "product-images/" + savedProduct.getId();
+			System.out.println(uploadDir);
+			List<String> listObjectKey = GoogleCloudStorageService.listFolders(uploadDir);
+			for (String objectKey : listObjectKey) {
+				if (!objectKey.contains("/extras/")) {
+					GoogleCloudStorageService.deleteFile(objectKey);
+				}
+			}
+			GoogleCloudStorageService.uploadFile(uploadDir, fileName, mainImageMultipartFile.getInputStream());
 		}
 		if (extraImageMultipartFile.length > 0) {
-			String uploadDir = "../product-images/" + savedProduct.getId() + "/extras";
+			String uploadDir = "product-images/" + savedProduct.getId() + "/extras";
 			for (MultipartFile multipartFile : extraImageMultipartFile) {
 				if (multipartFile.isEmpty())
 					continue;
 				String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+				GoogleCloudStorageService.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 			}
 		}
 

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.donations.admin.FileUploadUtil;
+import com.donations.admin.GoogleCloudStorageService;
 import com.donations.common.constants.Constants;
 import com.donations.common.entity.Currency;
 import com.donations.common.entity.GeneralSettingBag;
@@ -29,6 +29,9 @@ public class SettingController {
 
 	@Autowired
 	private CurrencyRepository currencyRepository;
+
+	@Autowired
+	private GoogleCloudStorageService googleService;
 
 	@GetMapping("/settings")
 	public String listAll(Model model) {
@@ -61,7 +64,7 @@ public class SettingController {
 		redirectAttributes.addFlashAttribute("message", "Mail server settings have been saved");
 		return "redirect:/settings#mailServer";
 	}
-	
+
 	@PostMapping("/settings/save_mail_templates")
 	public String saveMailTemplateSettings(HttpServletRequest request, RedirectAttributes redirectAttributes)
 			throws IOException {
@@ -70,7 +73,7 @@ public class SettingController {
 		redirectAttributes.addFlashAttribute("message", "Mail template settings have been saved");
 		return "redirect:/settings#mailTemplates";
 	}
-	
+
 	@PostMapping("/settings/save_payment")
 	public String savePaymentSettings(HttpServletRequest request, RedirectAttributes redirectAttributes)
 			throws IOException {
@@ -85,9 +88,11 @@ public class SettingController {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			String value = "/site-logo/" + fileName;
 			settingBag.updateSiteLogo(value);
-			String uploadDir = "../site-logo/";
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			String uploadDir = "site-logo";
+			googleService.removeFolder(uploadDir);
+			googleService.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
+//			FileUploadUtil.cleanDir(uploadDir);
+//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		}
 	}
 

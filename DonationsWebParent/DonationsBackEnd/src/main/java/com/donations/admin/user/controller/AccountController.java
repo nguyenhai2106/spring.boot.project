@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donations.admin.FileUploadUtil;
+import com.donations.admin.GoogleCloudStorageService;
 import com.donations.admin.security.DonationsUserDetails;
 import com.donations.admin.user.UserService;
 import com.donations.common.entity.User;
@@ -22,6 +23,9 @@ import com.donations.common.entity.User;
 public class AccountController {
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private GoogleCloudStorageService googleService;
 
 	@GetMapping("/account")
 	public String viewAccountDetails(@AuthenticationPrincipal DonationsUserDetails loggedUser, Model model) {
@@ -39,9 +43,11 @@ public class AccountController {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			user.setPhotos(fileName);
 			User savedUser = service.updateAccount(user);
-			String uploadDir = "../user-photos/" + savedUser.getId();
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			String uploadDir = "user-photos/" + savedUser.getId();
+//			FileUploadUtil.cleanDir(uploadDir);
+//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			googleService.removeFolder(uploadDir);
+			googleService.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 		} else {
 			if (user.getPhotos().isEmpty()) {
 				user.setPhotos(null);

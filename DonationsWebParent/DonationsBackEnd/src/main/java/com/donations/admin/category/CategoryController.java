@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.donations.admin.FileUploadUtil;
+import com.donations.admin.GoogleCloudStorageService;
 import com.donations.common.entity.Category;
 import com.donations.common.exception.CategoryNotFoundException;
 
@@ -28,14 +28,17 @@ public class CategoryController {
 	@Autowired
 	private CategoryService service;
 
+	@Autowired
+	private GoogleCloudStorageService googleService;
+
 	@GetMapping("/categories")
 	public String listFirstPage(Model model) {
 		return "redirect:/categories/page/1?sortField=firstName&sortDir=asc";
 	}
 
 	@GetMapping("/categories/page/{pageNum}")
-	public String listByPage(@PathVariable(name = "pageNum") int pageNum, @RequestParam("sortDir") String sortDir, Model model,
-			@Param("keyword") String keyword) {
+	public String listByPage(@PathVariable(name = "pageNum") int pageNum, @RequestParam("sortDir") String sortDir,
+			Model model, @Param("keyword") String keyword) {
 		if (pageNum < 1) {
 			pageNum = 1;
 		}
@@ -88,9 +91,11 @@ public class CategoryController {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			category.setImage(fileName);
 			Category savedCategory = service.save(category);
-			String uploadDir = "../category-images/" + savedCategory.getId();
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			String uploadDir = "category-images/" + savedCategory.getId();
+//			FileUploadUtil.cleanDir(uploadDir);
+//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			googleService.removeFolder(uploadDir);
+			googleService.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 		}
 		service.save(category);
 		redirectAttributes.addFlashAttribute("message", "The category has been save!");
@@ -122,9 +127,11 @@ public class CategoryController {
 	public String deleteUser(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes,
 			Model model) {
 		try {
+			Category category = service.get(id);
 			service.delete(id);
-			String categoryDir = "../category-images/" + id;
-			FileUploadUtil.removeDir(categoryDir);
+			String categoryDir = "category-images/" + id + "/" + category.getImage();
+			googleService.removeFolder(categoryDir);
+//			FileUploadUtil.removeDir(categoryDir);
 			redirectAttributes.addFlashAttribute("message",
 					"The user with ID " + id + " has been deleted successfully!");
 		} catch (CategoryNotFoundException e) {
@@ -136,8 +143,8 @@ public class CategoryController {
 	@GetMapping("categories/{id}/enabled/{status}")
 	public String updateUserEnabledStatus(@PathVariable(name = "id") Integer id,
 			@PathVariable(name = "status") boolean enabled, RedirectAttributes redirectAttributes,
-			@RequestParam("pageNum") String pageNum, @RequestParam("sortDir") String sortDir, @RequestParam("keyword") String keyword)
-			throws CategoryNotFoundException {
+			@RequestParam("pageNum") String pageNum, @RequestParam("sortDir") String sortDir,
+			@RequestParam("keyword") String keyword) throws CategoryNotFoundException {
 		service.updateCategoryEnabledStatus(id, enabled);
 		String status = enabled ? "Enabled" : "Disabled";
 		String message = "The user ID " + id + " has been " + status;
@@ -145,7 +152,8 @@ public class CategoryController {
 		if (keyword == null || keyword.isEmpty() || keyword.equals("null")) {
 			keyword = "";
 		}
-		return "redirect:/categories/page/" + pageNum + "?sortField=name" + "&sortDir=" + sortDir + "&keyword=" + keyword;
+		return "redirect:/categories/page/" + pageNum + "?sortField=name" + "&sortDir=" + sortDir + "&keyword="
+				+ keyword;
 	}
 
 	@GetMapping("/categories/export/csv")
